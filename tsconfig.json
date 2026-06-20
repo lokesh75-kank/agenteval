@@ -15,7 +15,10 @@
     "verbatimModuleSyntax": true,
     "isolatedModules": true,
     "outDir": "dist",
-    "rootDir": "."
+    "rootDir": ".",
+    "paths": {
+      "@lokeshkank/agenteval": ["./src/index.ts"]
+    }
   },
   "include": ["src", "test", "examples", "bench"],
   "exclude": ["node_modules", "dist"]
