@@ -9,7 +9,7 @@
 // Tools:
 //   - evaluate_agent  : given a trace + assertions, return pass/fail per assertion
 //   - check_grounding : given text (or a trace), return uncited claims + citation health
-//   - get_report      : given a SuiteReport, render console / json / html (audit attestation)
+//   - get_report      : given a SuiteReport, render console / json / html (audit-ready report)
 //
 // Uses the low-level MCP Server API so we need no extra schema dependency.
 // The @modelcontextprotocol/sdk is an OPTIONAL peer dependency.
@@ -74,7 +74,7 @@ const TOOLS = [
   {
     name: 'get_report',
     description:
-      'Render an AgentEval SuiteReport as a console scorecard, JSON, or an audit-grade HTML attestation.',
+      'Render an AgentEval SuiteReport as a console scorecard, JSON, or an audit-ready HTML report.',
     inputSchema: {
       type: 'object',
       properties: {

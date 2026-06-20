@@ -9,7 +9,7 @@ export default defineConfig({
   format: ['esm', 'cjs'],
   dts: true,
   clean: true,
-  sourcemap: true,
+  sourcemap: false, // keep the published tarball lean; source lives in the repo
   target: 'node20',
   splitting: false,
   shims: true,

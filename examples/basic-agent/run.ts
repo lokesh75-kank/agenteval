@@ -57,7 +57,7 @@ const report = await runSuite(adapter, scenarios, {
 process.stdout.write(renderConsole(report) + '\n');
 
 const out = join(dirname(fileURLToPath(import.meta.url)), 'report.html');
-writeFileSync(out, renderHtml(report, { title: 'Support Agent Reliability Attestation', agentName: 'Demo Support Agent' }));
+writeFileSync(out, renderHtml(report, { title: 'Support Agent Reliability Report', agentName: 'Demo Support Agent' }));
 process.stdout.write(`\nAudit report written to ${out}\n`);
 
 if (report.passingScenarios < report.totalScenarios) process.exitCode = 1;

@@ -1,11 +1,11 @@
 # AgentEval
 
-> Reliability and audit-evidence testing for LLM agents. Wrap any agent, assert its behavior, run N times to measure determinism (flakiness), check that claims are grounded in citations, and emit an audit-grade reliability report. Built for regulated and high-stakes domains (health, fintech, legal, compliance). TypeScript, ESM, Node >= 20. MIT.
+> Reliability and audit-ready testing for LLM agents. Wrap any agent, assert its behavior, run N times to measure determinism (flakiness), check that claims are grounded in citations, and emit an audit-ready reliability report. Built for regulated and high-stakes domains (health, fintech, legal, compliance). TypeScript, ESM, Node >= 20. MIT.
 
 ## What it is
 - Like unit tests + a crash-test rating for AI agents.
 - Three eval layers: deterministic structural assertions, grounding/citation validation, and an optional LLM-as-judge with self-consistency.
-- Differentiators vs other eval tools: determinism/flakiness scoring across N runs, grounding/auditability, and a filable audit attestation report (HTML). Plugs into existing traces (OpenTelemetry, LangSmith) and ships an MCP server.
+- Differentiators vs other eval tools: determinism/flakiness scoring across N runs, grounding/auditability, and an audit-ready report (HTML). Plugs into existing traces (OpenTelemetry, LangSmith) and ships an MCP server.
 
 ## Install
 - `npm install agenteval-core`

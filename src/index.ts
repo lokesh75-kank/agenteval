@@ -1,8 +1,8 @@
 // AgentEval public API.
 //
-// Reliability and audit-evidence testing for LLM agents: wrap any agent in an
+// Reliability and audit-ready testing for LLM agents: wrap any agent in an
 // AgentAdapter, define scenarios with assertions (and optional LLM-judge
-// rubrics), run them N times to measure determinism, and emit an audit-grade
+// rubrics), run them N times to measure determinism, and emit an audit-ready
 // report.
 //
 // Module re-exports below are wired during integration (Phase 2) as each module
@@ -67,7 +67,7 @@ export {
 } from './llm/index.js';
 export { judge, type JudgeResult, type JudgeArgs } from './judge/index.js';
 
-// ── Reports (console / json / audit-grade HTML attestation) ──
+// ── Reports (console / json / audit-ready HTML report) ──
 export { renderConsole, renderJson, renderHtml, type HtmlReportMeta } from './report/index.js';
 
 // ── Ingest (evaluate traces you already collect) ──

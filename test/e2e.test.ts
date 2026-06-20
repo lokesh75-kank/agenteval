@@ -77,7 +77,7 @@ describe('e2e: runSuite', () => {
     expect(s.determinism).toBeLessThan(1); // flaky, not fully deterministic
   });
 
-  it('renders console, json, and a self-contained HTML attestation', async () => {
+  it('renders console, json, and a self-contained HTML report', async () => {
     const report = await runSuite(stableAdapter, scenarios, { runs: 1 });
     const console = renderConsole(report);
     expect(console).toContain('Summary');

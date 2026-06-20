@@ -4,9 +4,9 @@
 [![npm](https://img.shields.io/npm/v/agenteval-core.svg)](https://www.npmjs.com/package/agenteval-core)
 [![license](https://img.shields.io/npm/l/agenteval-core.svg)](./LICENSE)
 
-**Reliability and audit-evidence testing for LLM agents.** Use it when you need an AI agent to behave *consistently* and *cite its sources* - especially in regulated or high-stakes domains (health, fintech, legal, compliance).
+**Reliability and audit-ready testing for LLM agents.** Use it when you need an AI agent to behave *consistently* and *cite its sources* - especially in regulated or high-stakes domains (health, fintech, legal, compliance).
 
-Think of it as **unit tests + a crash-test rating for agents**: wrap any agent, define what "good" looks like, run it N times, and get back a scorecard, a determinism (flakiness) score, and an **audit-grade reliability report** your QA or compliance team can actually file.
+Think of it as **unit tests + a crash-test rating for agents**: wrap any agent, define what "good" looks like, run it N times, and get back a scorecard, a determinism (flakiness) score, and an **audit-ready reliability report** your QA or compliance team can review and attach to their records.
 
 > Status: v0.1. AgentEval grew out of the evaluation layer of **Deminn**, a multi-agent system for regulated quality and compliance (CAPA, FDA/ISO) workflows, generalized to evaluate any LLM agent.
 
@@ -18,7 +18,7 @@ Most eval tools score *accuracy* on single answers. AgentEval targets the things
 
 - **Determinism / flakiness** - run the same input N times. If the agent answers differently 2 of 5 times, that's a 60% reliability score. A single hand-check never catches this.
 - **Grounding / auditability** - is every factual or regulatory claim backed by a citation that resolves? Are quotes verbatim?
-- **Audit attestation report** - a self-contained HTML report (scores, grounding rate, determinism, per-scenario evidence) designed to be reviewed and filed, not just printed to a terminal.
+- **Audit-ready report** - a self-contained HTML report (scores, grounding rate, determinism, per-scenario evidence) designed to be reviewed and attached to records, not just printed to a terminal.
 
 It plugs into traces you already collect (OpenTelemetry, LangSmith) and ships an **MCP server** so coding agents can call it directly.
 
@@ -77,7 +77,7 @@ const scenarios = loadScenarios('./scenarios');
 const report = await runSuite(adapter, scenarios, { runs: 5 });
 
 console.log(renderConsole(report));
-require('node:fs').writeFileSync('attestation.html', renderHtml(report));
+require('node:fs').writeFileSync('report.html', renderHtml(report));
 ```
 
 ```
@@ -91,7 +91,7 @@ require('node:fs').writeFileSync('attestation.html', renderHtml(report));
 ```bash
 npx agenteval init          # scaffold agenteval.config.mjs + an example scenario
 npx agenteval run           # run scenarios, print a scorecard
-npx agenteval run --html attestation.html   # also write the audit report
+npx agenteval run --html report.html   # also write the audit report
 npx agenteval baseline      # save a known-good snapshot
 npx agenteval check         # fail (exit 1) if results regressed vs the baseline  <- wire into CI
 ```

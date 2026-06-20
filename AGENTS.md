@@ -4,7 +4,7 @@ If you are an AI coding agent integrating AgentEval into a user's project, follo
 
 ## What this library does
 
-Evaluates the reliability of an LLM agent: wrap the user's agent, run scenarios (assertions about its behavior) N times, and report pass/fail + a determinism score + grounding/citation health. Output includes an audit-grade HTML report.
+Evaluates the reliability of an LLM agent: wrap the user's agent, run scenarios (assertions about its behavior) N times, and report pass/fail + a determinism score + grounding/citation health. Output includes an audit-ready HTML report.
 
 ## Canonical integration (do this)
 

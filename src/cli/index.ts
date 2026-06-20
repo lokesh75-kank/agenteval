@@ -90,7 +90,7 @@ function toBaseline(report: SuiteReport): Baseline {
 const program = new Command();
 program
   .name('agenteval')
-  .description('Reliability and audit-evidence testing for LLM agents')
+  .description('Reliability and audit-ready testing for LLM agents')
   .version('0.1.0');
 
 program
@@ -100,7 +100,7 @@ program
   .option('-c, --config <file>', 'config module')
   .option('-r, --runs <n>', 'runs per scenario (determinism sampling)')
   .option('--json <file>', 'write JSON report to file')
-  .option('--html <file>', 'write audit-grade HTML report to file')
+  .option('--html <file>', 'write audit-ready HTML report to file')
   .action(async (scenarios, opts) => {
     const { report } = await runReport(opts, scenarios);
     process.stdout.write(renderConsole(report) + '\n');

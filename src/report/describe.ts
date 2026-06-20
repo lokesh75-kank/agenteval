@@ -81,7 +81,7 @@ export function groundingPassRate(report: SuiteReport): number | undefined {
 }
 
 /**
- * The run we treat as the attestation evidence for a scenario: the first run if
+ * The run we treat as the representative run for a scenario: the first run if
  * present. Determinism across all runs is reported separately.
  */
 export function representativeRun(s: ScenarioRunSummary): ScenarioRunSummary['perRun'][number] | undefined {
