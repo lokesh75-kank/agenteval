@@ -4,7 +4,7 @@
 
 Think of it as **unit tests + a crash-test rating for agents**: wrap any agent, define what "good" looks like, run it N times, and get back a scorecard, a determinism (flakiness) score, and an **audit-grade reliability report** your QA or compliance team can actually file.
 
-> Status: v0.1, early but working. AgentEval grew out of the evaluation layer of **Deminn**, a multi-agent system for regulated quality and compliance (CAPA, FDA/ISO) workflows, generalized here to evaluate any LLM agent.
+> Status: v0.1. AgentEval grew out of the evaluation layer of **Deminn**, a multi-agent system for regulated quality and compliance (CAPA, FDA/ISO) workflows, generalized to evaluate any LLM agent.
 
 ---
 
