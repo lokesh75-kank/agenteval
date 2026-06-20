@@ -84,8 +84,11 @@ export function quoteMatchesSource(
   }
 
   const lcs = longestCommonSubstringLength(normQuote, normSource);
-  const similarity = lcs / normQuote.length;
-  return { match: similarity >= 0.9, similarity: round2(similarity) };
+  // Decide `match` against the SAME rounded value we report, so the two never
+  // disagree at the boundary (e.g. raw 0.904 must not report 0.90 + match=true
+  // while raw 0.896 reports 0.90 + match=false).
+  const similarity = round2(lcs / normQuote.length);
+  return { match: similarity >= 0.9, similarity };
 }
 
 function round2(n: number): number {

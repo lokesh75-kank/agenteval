@@ -170,9 +170,16 @@ function evaluateOne(
 
     case 'recall_at_k': {
       // At least k (or all) of `expected` must appear in the final text.
+      // Guard k: a non-positive k would make the assertion vacuously pass even
+      // when nothing matched, which is never the intent. Clamp the target to at
+      // least 1 (when there is anything to expect).
       const lower = trace.finalText.toLowerCase();
       const present = a.expected.filter((e) => lower.includes(e.toLowerCase()));
-      const target = a.all ? a.expected.length : a.k;
+      const target = a.all
+        ? a.expected.length
+        : a.expected.length === 0
+          ? 0
+          : Math.max(1, a.k);
       if (present.length >= target) {
         return {
           assertion: a,

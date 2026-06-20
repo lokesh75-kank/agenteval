@@ -136,21 +136,18 @@ function buildGradingPrompt(trace: AgentTrace, rubric: string): string {
 
 /**
  * Tolerantly extract a verdict object from a model reply. Real models wrap JSON
- * in code fences, prefix it with "Here is my verdict:", or append commentary.
- * We (1) strip code fences, (2) try a direct parse, then (3) fall back to
- * scanning for the first balanced `{...}` block and parsing that.
+ * in code fences, prefix it with reasoning, emit a reasoning fence BEFORE the
+ * verdict fence, or append commentary. We try (1) a direct parse of the whole
+ * reply, then (2) every balanced `{...}` block found anywhere in the reply
+ * (longest first). The brace scanner is string-aware, so braces inside JSON
+ * string values do not mis-slice the object, and it naturally ignores code
+ * fences (backticks are not braces) so a leading reasoning fence is harmless.
  *
  * Returns `null` when nothing parseable with a boolean `pass` is found.
  */
 export function parseVerdict(text: string): RawVerdict | null {
-  const candidates: string[] = [];
-
-  const stripped = stripCodeFences(text);
-  candidates.push(stripped.trim());
-
-  // Any balanced object substrings, longest first (the verdict is usually the
-  // most substantial object in the reply).
-  for (const block of extractJsonObjects(stripped)) candidates.push(block);
+  const candidates: string[] = [text.trim()];
+  for (const block of extractJsonObjects(text)) candidates.push(block);
 
   for (const candidate of candidates) {
     const verdict = coerceVerdict(candidate);
@@ -159,20 +156,29 @@ export function parseVerdict(text: string): RawVerdict | null {
   return null;
 }
 
-/** Remove ```json ... ``` (or bare ``` ... ```) fences, keeping the body. */
-function stripCodeFences(text: string): string {
-  const fence = /```(?:json|JSON)?\s*([\s\S]*?)```/m.exec(text);
-  return fence && fence[1] !== undefined ? fence[1] : text;
-}
-
-/** Yield every balanced top-level `{...}` block in `text`, longest first. */
+/**
+ * Yield every balanced top-level `{...}` block in `text`, longest first.
+ * String-aware: braces inside double-quoted JSON strings (and escaped quotes)
+ * are ignored, so a verdict like {"reason":"see }"} is not mis-sliced. Backticks
+ * are not braces, so leading reasoning code fences are skipped naturally.
+ */
 function extractJsonObjects(text: string): string[] {
   const blocks: string[] = [];
   let depth = 0;
   let start = -1;
+  let inString = false;
+  let escaped = false;
   for (let i = 0; i < text.length; i++) {
     const ch = text[i];
-    if (ch === '{') {
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (ch === '\\') escaped = true;
+      else if (ch === '"') inString = false;
+      continue;
+    }
+    if (ch === '"') {
+      inString = true;
+    } else if (ch === '{') {
       if (depth === 0) start = i;
       depth++;
     } else if (ch === '}') {
@@ -227,15 +233,22 @@ export async function judge(args: JudgeArgs): Promise<JudgeResult> {
   const prompt = buildGradingPrompt(trace, rubric);
 
   // Cast votes in parallel; each is an independent sample of the same prompt.
-  const replies = await Promise.all(
+  // A vote that THROWS (rate limit, network, provider 5xx, timeout - the most
+  // common real failure of an LLM judge) is captured as `null` so it counts as
+  // a non-passing vote rather than crashing the whole evaluation. This makes
+  // the documented "fail closed" contract hold for the dominant failure mode.
+  const verdicts = await Promise.all(
     Array.from({ length: votes }, () =>
-      llm.complete({
-        system: JUDGE_SYSTEM,
-        messages: [{ role: 'user', content: prompt }],
-        // Light sampling so repeated votes can actually diverge; callers can
-        // wrap an llm with their own settings if they want determinism.
-        temperature: 0.3,
-      }),
+      llm
+        .complete({
+          system: JUDGE_SYSTEM,
+          messages: [{ role: 'user', content: prompt }],
+          // Light sampling so repeated votes can actually diverge; callers can
+          // wrap an llm with their own settings if they want determinism.
+          temperature: 0.3,
+        })
+        .then((reply) => parseVerdict(reply.text))
+        .catch(() => null),
     ),
   );
 
@@ -243,10 +256,9 @@ export async function judge(args: JudgeArgs): Promise<JudgeResult> {
   const scores: number[] = [];
   let passingVotes = 0;
 
-  for (const reply of replies) {
-    const verdict = parseVerdict(reply.text);
+  for (const verdict of verdicts) {
     if (!verdict) {
-      rationale.push('unparseable judge response (counted as fail)');
+      rationale.push('judge call failed or unparseable (counted as fail)');
       continue;
     }
     if (verdict.pass) passingVotes++;
@@ -254,7 +266,8 @@ export async function judge(args: JudgeArgs): Promise<JudgeResult> {
     rationale.push(verdict.reason || (verdict.pass ? 'pass' : 'fail'));
   }
 
-  const pass = votes > 0 && passingVotes / votes >= passThreshold;
+  // votes is always >= 1 (normalised above), so no divide-by-zero guard needed.
+  const pass = passingVotes / votes >= passThreshold;
   const score = scores.length > 0
     ? scores.reduce((a, b) => a + b, 0) / scores.length
     : undefined;

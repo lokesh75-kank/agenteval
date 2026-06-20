@@ -26,9 +26,13 @@ const BRACKET_TAG_RE = /\[([A-Za-z]+-?\d+)\]/g;
 const CLAUSE_SPAN_RE =
   /<span\b[^>]*\bclass=["']citation\b[^"']*["'][^>]*\bdata-clause-id=["']([^"']+)["'][^>]*>/gi;
 
-// Inline regulation citations in prose: "21 CFR 820.100", "ISO 13485:2016".
-// These double as both a claim subject (claims.ts) and a resolvable reference.
-const INLINE_REG_RE = /\b\d+\s*CFR\s*(?:Part\s*)?\d+(?:\.\d+(?:\([a-z\d]+\))*)?|\bISO\s+\d+(?:[-:]?\d{4})?/gi;
+// Inline regulation citations in prose: "21 CFR 820.100", "ISO 13485:2016",
+// "IEC 60601-1", "MDR Article 87", "IVDR Annex I", "21 USC 360". These double as
+// both a claim subject (claims.ts REGULATED_PRESET) and a resolvable reference,
+// so the families here are kept in sync with REGULATED_CLAIM_PATTERNS - an agent
+// that cites any of them can have that citation recognized and resolved.
+const INLINE_REG_RE =
+  /\b\d+\s*CFR\s*(?:Part\s*)?\d+(?:\.\d+(?:\([a-z\d]+\))*)?|\bISO\s+\d+(?:[-:]?\d{4})?(?:\s+(?:Section|Clause)\s*[\d.]+)?|\bIEC\s+\d+(?:-\d+)?|\b(?:MDR|IVDR)\s+(?:Article|Annex)\s*[\dIVX]+|\b21\s*USC\s*\d+/gi;
 
 /**
  * Extract every inline reference token from `text`. Pure parsing - no

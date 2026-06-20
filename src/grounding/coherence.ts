@@ -27,10 +27,12 @@ export interface OrphanReference {
   referencingSectionIds: string[];
 }
 
-// Default tag shape: an uppercase prefix, an optional hyphen, then digits.
-// Covers CA-1 / PA-2 / RC-3 / E5 / GAP-7. Word-bounded so it does not match
-// inside "RCA-1" or "CA-1ish". Group 0 is the full tag.
-const TAG_RE = /\b[A-Z]{1,5}-?\d+\b/g;
+// Default tag shape: a hyphenated multi-letter prefix (CA-1, PA-2, RC-3, GAP-7)
+// OR a short single-letter+digits evidence tag (E5, R3). Requiring the hyphen
+// for multi-letter prefixes is what keeps ordinary all-caps-plus-digit prose
+// (FIGURE2, TABLE3, PART820, ISO9001) from being mistaken for reference tags
+// and reported as fabricated orphan references. Group 0 is the full tag.
+const TAG_RE = /\b(?:[A-Z]{2,5}-\d+|[A-Z]\d+)\b/g;
 
 /**
  * Strip HTML tags before scanning so attribute values (e.g.

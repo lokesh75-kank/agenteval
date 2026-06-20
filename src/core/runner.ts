@@ -45,8 +45,14 @@ export async function runScenario(
   scenario: Scenario,
   options: RunOptions = {},
 ): Promise<ScenarioRunSummary> {
-  const runs = Math.max(1, options.runs ?? 1);
-  const passThreshold = options.passThreshold ?? DEFAULT_PASS_THRESHOLD;
+  // Coerce defensively: a NaN or non-positive `runs` (e.g. a bad CLI --runs)
+  // must not produce NaN loop bounds. A threshold is clamped to [0, 1].
+  const runsRaw = Math.floor(Number(options.runs));
+  const runs = Number.isFinite(runsRaw) && runsRaw >= 1 ? runsRaw : 1;
+  const thRaw = Number(options.passThreshold);
+  const passThreshold = Number.isFinite(thRaw)
+    ? Math.min(1, Math.max(0, thRaw))
+    : DEFAULT_PASS_THRESHOLD;
 
   const perRun: ScenarioResult[] = [];
   for (let i = 0; i < runs; i++) {
@@ -86,20 +92,31 @@ async function runOnce(
   const assertionsPass = assertions.every((a) => a.pass);
 
   let judgeResult: ScenarioResult['judge'];
-  if (scenario.judge && options.llm) {
-    const v = await runJudge({
-      trace,
-      rubric: scenario.judge.rubric,
-      llm: options.llm,
-      votes: scenario.judge.votes,
-      passThreshold: scenario.judge.passThreshold,
-    });
-    judgeResult = {
-      pass: v.pass,
-      votes: v.votes,
-      passingVotes: v.passingVotes,
-      detail: v.rationale[0],
-    };
+  if (scenario.judge) {
+    if (options.llm) {
+      const v = await runJudge({
+        trace,
+        rubric: scenario.judge.rubric,
+        llm: options.llm,
+        votes: scenario.judge.votes,
+        passThreshold: scenario.judge.passThreshold,
+      });
+      judgeResult = {
+        pass: v.pass,
+        votes: v.votes,
+        passingVotes: v.passingVotes,
+        detail: v.rationale[0],
+      };
+    } else {
+      // The scenario requires a judge but no LLM client was provided. Fail
+      // closed rather than silently passing an unjudged scenario.
+      judgeResult = {
+        pass: false,
+        votes: 0,
+        passingVotes: 0,
+        detail: 'scenario declares a judge rubric but no llm client was provided to the runner',
+      };
+    }
   }
 
   const pass = !trace.error && assertionsPass && (judgeResult ? judgeResult.pass : true);

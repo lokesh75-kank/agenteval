@@ -45,6 +45,15 @@ export function createAnthropic(opts: AnthropicOptions = {}): LLMClient {
 
   return {
     async complete(req: LLMRequest): Promise<LLMResponse> {
+      // Check config first: a missing key is the more actionable error than a
+      // missing SDK when both are absent.
+      if (!apiKey || apiKey.trim().length === 0) {
+        throw new Error(
+          'Anthropic API key is not configured. Pass { apiKey } to createAnthropic ' +
+            'or set the ANTHROPIC_API_KEY environment variable.',
+        );
+      }
+
       // Lazy, optional-peer-dependency import. Keeping this inside complete()
       // is what makes @anthropic-ai/sdk optional.
       let mod: typeof import('@anthropic-ai/sdk');
@@ -57,21 +66,15 @@ export function createAnthropic(opts: AnthropicOptions = {}): LLMClient {
         );
       }
 
-      if (!apiKey || apiKey.trim().length === 0) {
-        throw new Error(
-          'Anthropic API key is not configured. Pass { apiKey } to createAnthropic ' +
-            'or set the ANTHROPIC_API_KEY environment variable.',
-        );
-      }
-
       const Anthropic = mod.default;
       const client = new Anthropic({ apiKey });
 
-      // max_tokens is required by the Messages API; default generously but
-      // stay under the non-streaming HTTP-timeout danger zone.
+      // max_tokens is required by the Messages API and must be >= 1; default
+      // generously but stay under the non-streaming HTTP-timeout danger zone.
+      // Treat an explicit 0 (or negative) as "use the default".
       const message = (await client.messages.create({
         model,
-        max_tokens: req.maxTokens ?? 4096,
+        max_tokens: req.maxTokens && req.maxTokens > 0 ? req.maxTokens : 4096,
         ...(req.system !== undefined ? { system: req.system } : {}),
         ...(req.temperature !== undefined ? { temperature: req.temperature } : {}),
         messages: req.messages.map((m) => ({ role: m.role, content: m.content })),

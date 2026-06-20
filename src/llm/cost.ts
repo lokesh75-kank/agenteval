@@ -65,12 +65,14 @@ function lookupPricing(model: string): ModelPricing | undefined {
   const stripped = model.replace(/^[a-z]+[./]/, '');
   if (stripped !== model && PRICING[stripped]) return PRICING[stripped];
 
-  // Fall back to the longest known id that the model id starts with. This
-  // catches dated snapshots and "-fast" variants without listing each one.
+  // Fall back to the longest known id that appears anywhere in the model id.
+  // Using substring containment (not just startsWith) catches multi-segment ids
+  // like Bedrock cross-region inference profiles ("us.anthropic.claude-..."),
+  // dated snapshots, and "-fast" variants without listing each one.
   let best: ModelPricing | undefined;
   let bestLen = 0;
   for (const [id, price] of Object.entries(PRICING)) {
-    if ((model === id || model.startsWith(`${id}-`) || stripped.startsWith(`${id}-`)) && id.length > bestLen) {
+    if ((model === id || model.includes(id) || stripped.includes(id)) && id.length > bestLen) {
       best = price;
       bestLen = id.length;
     }

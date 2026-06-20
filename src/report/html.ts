@@ -39,7 +39,8 @@ export function renderHtml(report: SuiteReport, meta?: HtmlReportMeta): string {
 
   const grounding = groundingPassRate(report);
   const overall = overallDeterminism(report);
-  const allPassed = report.passingScenarios === report.totalScenarios && report.totalScenarios > 0;
+  const isEmpty = report.totalScenarios === 0;
+  const allPassed = report.passingScenarios === report.totalScenarios && !isEmpty;
 
   const summaryCards = [
     card('Scenarios passed', `${report.passingScenarios} / ${report.totalScenarios}`, allPassed ? 'ok' : 'warn'),
@@ -51,8 +52,8 @@ export function renderHtml(report: SuiteReport, meta?: HtmlReportMeta): string {
     .filter(Boolean)
     .join('\n');
 
-  const verdictText = allPassed ? 'PASS' : 'ATTENTION REQUIRED';
-  const verdictClass = allPassed ? 'verdict-ok' : 'verdict-warn';
+  const verdictText = isEmpty ? 'NO SCENARIOS' : allPassed ? 'PASS' : 'ATTENTION REQUIRED';
+  const verdictClass = isEmpty ? 'verdict-warn' : allPassed ? 'verdict-ok' : 'verdict-warn';
 
   const rows = report.scenarios.map(scenarioRow).join('\n');
 
@@ -122,6 +123,9 @@ function overallDeterminism(report: SuiteReport): number {
 
 /** A short prose sentence under the summary cards. No em dashes by design. */
 function summaryProse(report: SuiteReport, overall: number, grounding: number | undefined): string {
+  if (report.totalScenarios === 0) {
+    return 'No scenarios were evaluated. Add scenarios and re-run to produce an attestation.';
+  }
   const base = `${report.passingScenarios} of ${report.totalScenarios} scenarios met all assertions, with ${pct1(overall)} mean determinism across repeated runs.`;
   if (grounding === undefined) return base;
   return `${base} Grounding checks passed at ${pct(grounding)}.`;

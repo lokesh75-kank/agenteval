@@ -58,7 +58,26 @@ const REGULATED_CLAIM_PATTERNS: RegExp[] = [
  */
 export const REGULATED_PRESET: GroundingConfig = {
   claimPatterns: REGULATED_CLAIM_PATTERNS,
-  imperativeMarkers: ['shall', 'must', 'required', 'prohibited'],
+  // Mirrors the coverage of the source regulatory detector. buildImperativeRegex
+  // matches each marker literally with word boundaries, so multi-word phrases
+  // ("may not", "is required to") and verb variants ("requires", "mandates")
+  // must be listed explicitly - whole-word matching means "required" alone does
+  // not also catch "requires".
+  imperativeMarkers: [
+    'shall',
+    'shall not',
+    'must',
+    'must not',
+    'may not',
+    'required',
+    'requires',
+    'is required to',
+    'are required to',
+    'mandate',
+    'mandates',
+    'mandated',
+    'prohibited',
+  ],
 };
 
 // ─────────────────────────────────────────────

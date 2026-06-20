@@ -177,7 +177,9 @@ function toMillis(v: unknown): number | undefined {
   // Heuristic by magnitude (year-2001+ epochs): ns ~1e18, µs ~1e15, ms ~1e12, s ~1e9.
   if (n >= 1e17) return n / 1e6; // nanoseconds
   if (n >= 1e14) return n / 1e3; // microseconds
-  return n; // already ms (or a small relative duration)
+  if (n >= 1e11) return n; // already milliseconds
+  if (n >= 1e8) return n * 1e3; // seconds-precision epoch -> ms
+  return n; // small relative duration, leave as-is
 }
 
 /** Compute durationMs from explicit fields or start/end timestamps. */
@@ -323,15 +325,21 @@ function nestSpans(spans: AnySpan[]): AnySpan[] {
       roots.push(s);
     }
   }
-  // Attach synthetic children so the recursive walker finds them uniformly.
-  for (const s of spans) {
+  // Build a nested tree of SHALLOW CLONES so we never mutate the caller's input
+  // (the module contract promises a pure transform). The cache both dedupes and
+  // guards against cycles in malformed input.
+  const cloneCache = new Map<AnySpan, AnySpan>();
+  const build = (s: AnySpan): AnySpan => {
+    const cached = cloneCache.get(s);
+    if (cached) return cached;
+    const clone: AnySpan = { ...s };
+    cloneCache.set(s, clone);
     const id = spanId(s);
-    if (id && kids.has(id)) {
-      const existing = childrenOf(s);
-      (s as AnySpan).children = [...existing, ...(kids.get(id) ?? [])];
-    }
-  }
-  return roots;
+    const childOriginals = [...childrenOf(s), ...(id ? (kids.get(id) ?? []) : [])];
+    if (childOriginals.length > 0) clone.children = childOriginals.map(build);
+    return clone;
+  };
+  return roots.map(build);
 }
 
 /** Recursively collect spans depth-first (parent before children). */

@@ -23,11 +23,10 @@ export interface UncitedClaim {
   offset: number;
 }
 
-// Already-cited regions. We mask these out before scanning so a claim that IS
-// wrapped in a citation span is not double-counted as uncited. Tolerates any
-// attribute order and single or double quotes.
-const CITATION_SPAN_RE =
-  /<span\b[^>]*\bclass=["']citation\b[^"']*["'][^>]*>[\s\S]*?<\/span>/gi;
+// Matches any opening or closing <span> tag (with attributes). Used by the
+// nesting-aware masker below to find citation regions, including ones that wrap
+// nested <span> children.
+const SPAN_TAG_RE = /<\/?span\b[^>]*>/gi;
 
 /**
  * Find claims in `text` that are not enclosed in a citation span.
@@ -81,8 +80,40 @@ function buildImperativeRegex(markers: string[]): RegExp {
   return new RegExp(`\\b(?:${escaped.join('|')})\\b`, 'i');
 }
 
+/**
+ * Replace the content of every `<span class="citation">...</span>` region with
+ * equal-length whitespace (so char offsets stay valid), correctly handling
+ * citation spans that contain nested `<span>` children. A nested span inside a
+ * citation no longer truncates the mask, so cited claims are never re-flagged.
+ */
 function maskCitationSpans(text: string): string {
-  return text.replace(CITATION_SPAN_RE, (m) => ' '.repeat(m.length));
+  const out = text.split('');
+  const stack: boolean[] = []; // per-open-span: is it a citation span?
+  let citationDepth = 0;
+  let cursor = 0;
+  const blank = (from: number, to: number) => {
+    for (let k = from; k < to; k++) {
+      if (out[k] !== undefined && !/\s/.test(out[k] as string)) out[k] = ' ';
+    }
+  };
+
+  SPAN_TAG_RE.lastIndex = 0;
+  let m: RegExpExecArray | null;
+  while ((m = SPAN_TAG_RE.exec(text)) !== null) {
+    if (citationDepth > 0) blank(cursor, m.index);
+    const tag = m[0];
+    if (tag.startsWith('</')) {
+      if (stack.pop() && citationDepth > 0) citationDepth--;
+    } else {
+      const isCitation = /\bclass=["'][^"']*\bcitation\b/i.test(tag);
+      stack.push(isCitation);
+      if (isCitation) citationDepth++;
+    }
+    cursor = m.index + tag.length;
+  }
+  // Unbalanced trailing citation region (model truncated mid-span).
+  if (citationDepth > 0) blank(cursor, text.length);
+  return out.join('');
 }
 
 interface SentenceRange {

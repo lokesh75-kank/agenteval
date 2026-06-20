@@ -42,7 +42,12 @@ export function loadScenarios(path: string): Scenario[] {
 
 function loadFromDirectory(dir: string): Scenario[] {
   const files = readdirSync(dir)
-    .filter((f) => (f.endsWith('.yaml') || f.endsWith('.yml')) && !f.startsWith('manifest.'))
+    .filter(
+      (f) =>
+        (f.endsWith('.yaml') || f.endsWith('.yml')) &&
+        f !== 'manifest.yaml' &&
+        f !== 'manifest.yml',
+    )
     .sort();
   return files.map((f) => loadScenario(join(dir, f)));
 }

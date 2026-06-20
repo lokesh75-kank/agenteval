@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Support Agent Reliability Attestation</title>
+<style>
+
+:root {
+  --ink: #1c1e21;
+  --muted: #5b6470;
+  --line: #e2e5ea;
+  --bg: #f6f7f9;
+  --paper: #ffffff;
+  --ok: #1f7a4d;
+  --ok-bg: #e8f3ec;
+  --warn: #8a5a00;
+  --warn-bg: #fbf2e0;
+  --bad: #a3282b;
+  --bad-bg: #f7e7e7;
+  --accent: #243b53;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+.doc {
+  max-width: 980px;
+  margin: 40px auto;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 48px 56px;
+  box-shadow: 0 1px 3px rgba(20,30,50,0.05);
+}
+h1, h2 { font-family: Georgia, "Times New Roman", serif; color: var(--accent); font-weight: 600; }
+h1 { font-size: 28px; margin: 4px 0 24px; letter-spacing: 0.2px; }
+h2 { font-size: 18px; margin: 36px 0 14px; padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+.head { border-bottom: 2px solid var(--accent); padding-bottom: 18px; }
+.brand { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+.meta { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 16px 0 0; }
+.meta div { margin: 0; }
+.meta dt { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); }
+.meta dd { margin: 2px 0 0; font-size: 15px; }
+.verdict-ok { color: var(--ok); font-weight: 700; letter-spacing: 1px; }
+.verdict-warn { color: var(--bad); font-weight: 700; letter-spacing: 1px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin: 8px 0 4px; }
+.cardItem { border: 1px solid var(--line); border-radius: 8px; padding: 18px 20px; border-left: 4px solid var(--line); }
+.cardItem.tone-ok { border-left-color: var(--ok); background: var(--ok-bg); }
+.cardItem.tone-warn { border-left-color: var(--warn); background: var(--warn-bg); }
+.cardItem.tone-bad { border-left-color: var(--bad); background: var(--bad-bg); }
+.cardValue { font-size: 26px; font-weight: 700; font-family: Georgia, serif; }
+.cardLabel { font-size: 12px; letter-spacing: 0.5px; color: var(--muted); margin-top: 4px; }
+.note { color: var(--muted); font-size: 14px; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+thead th { text-align: left; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); border-bottom: 2px solid var(--line); padding: 8px 10px; }
+tbody td { border-bottom: 1px solid var(--line); padding: 12px 10px; vertical-align: top; }
+.scn code { font-size: 13px; background: var(--bg); padding: 2px 6px; border-radius: 4px; }
+.sub { color: var(--muted); font-size: 12px; }
+.pill { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; padding: 2px 8px; border-radius: 999px; }
+.pill-ok { color: var(--ok); background: var(--ok-bg); }
+.pill-bad { color: var(--bad); background: var(--bad-bg); }
+.alist { list-style: none; margin: 0; padding: 0; }
+.alist li { padding: 3px 0; font-size: 13px; }
+.ok { color: var(--ok); font-weight: 700; font-size: 11px; }
+.bad { color: var(--bad); font-weight: 700; font-size: 11px; }
+.tag { font-size: 10px; letter-spacing: 0.5px; text-transform: uppercase; color: var(--accent); background: var(--bg); padding: 1px 6px; border-radius: 4px; }
+.detail { color: var(--bad); font-size: 12px; margin: 2px 0 0 4px; }
+.errline { color: var(--bad); font-size: 12px; margin-top: 6px; }
+.foot { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+@media print { body { background: #fff; } .doc { border: none; box-shadow: none; margin: 0; max-width: none; } }
+
+</style>
+</head>
+<body>
+<main class="doc">
+  <header class="head">
+    <div class="brand">AgentEval</div>
+    <h1>Support Agent Reliability Attestation</h1>
+    <dl class="meta">
+      <div><dt>Agent under test</dt><dd>Demo Support Agent</dd></div>
+      <div><dt>Generated</dt><dd>2026-06-20T20:08:40.798Z</dd></div>
+      <div><dt>Verdict</dt><dd><span class="verdict-ok">PASS</span></dd></div>
+    </dl>
+  </header>
+
+  <section class="summary">
+    <h2>Executive summary</h2>
+    <div class="cards">
+      <div class="cardItem tone-ok">
+        <div class="cardValue">3 / 3</div>
+        <div class="cardLabel">Scenarios passed</div>
+      </div>
+      <div class="cardItem tone-ok">
+        <div class="cardValue">100.0%</div>
+        <div class="cardLabel">Overall determinism</div>
+      </div>
+      <div class="cardItem tone-ok">
+        <div class="cardValue">100%</div>
+        <div class="cardLabel">Grounding pass rate</div>
+      </div>
+    </div>
+    <p class="note">3 of 3 scenarios met all assertions, with 100.0% mean determinism across repeated runs. Grounding checks passed at 100%.</p>
+  </section>
+
+  <section class="evidence">
+    <h2>Scenario evidence</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Scenario</th>
+          <th>Status</th>
+          <th>Determinism</th>
+          <th>Assertions</th>
+          <th>Judge</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="scn"><code>refund-window</code></td>
+          <td><span class="pill pill-ok">PASS</span></td>
+          <td>100% <span class="sub">3/3</span></td>
+          <td><ul class="alist"><li><span class="ok">PASS</span> tool_called: search_kb</li><li><span class="ok">PASS</span> text_contains_one_of: [30 days, 30-day]</li><li><span class="ok">PASS</span> every_claim_has_citation <span class="tag">grounding</span></li></ul></td>
+          <td><span class="sub">n/a</span></td>
+        </tr>
+        <tr>
+          <td class="scn"><code>password-reset</code></td>
+          <td><span class="pill pill-ok">PASS</span></td>
+          <td>100% <span class="sub">3/3</span></td>
+          <td><ul class="alist"><li><span class="ok">PASS</span> text_contains_one_of: [forgot password, reset]</li><li><span class="ok">PASS</span> citations_resolve <span class="tag">grounding</span></li></ul></td>
+          <td><span class="sub">n/a</span></td>
+        </tr>
+        <tr>
+          <td class="scn"><code>out-of-scope-refusal</code></td>
+          <td><span class="pill pill-ok">PASS</span></td>
+          <td>100% <span class="sub">3/3</span></td>
+          <td><ul class="alist"><li><span class="ok">PASS</span> refusal</li><li><span class="ok">PASS</span> text_does_not_contain: [sunny, degrees, forecast]</li></ul></td>
+          <td><span class="sub">n/a</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <footer class="foot">
+    <p>This document is a point-in-time attestation of automated reliability testing. 3 scenario(s) were evaluated. Generated by AgentEval.</p>
+  </footer>
+</main>
+</body>
+</html>

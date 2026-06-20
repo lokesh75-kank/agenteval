@@ -45,6 +45,14 @@ export function createGoogle(opts: GoogleOptions = {}): LLMClient {
 
   return {
     async complete(req: LLMRequest): Promise<LLMResponse> {
+      // Check config first: a missing key is more actionable than a missing SDK.
+      if (!apiKey || apiKey.trim().length === 0) {
+        throw new Error(
+          'Google API key is not configured. Pass { apiKey } to createGoogle or set ' +
+            'the GEMINI_API_KEY (or GOOGLE_API_KEY) environment variable.',
+        );
+      }
+
       let mod: typeof import('@google/genai');
       try {
         mod = await import('@google/genai');
@@ -52,13 +60,6 @@ export function createGoogle(opts: GoogleOptions = {}): LLMClient {
         throw new Error(
           "createGoogle requires the optional peer dependency '@google/genai'. " +
             "Install it with: npm install @google/genai",
-        );
-      }
-
-      if (!apiKey || apiKey.trim().length === 0) {
-        throw new Error(
-          'Google API key is not configured. Pass { apiKey } to createGoogle or set ' +
-            'the GEMINI_API_KEY (or GOOGLE_API_KEY) environment variable.',
         );
       }
 
@@ -76,7 +77,7 @@ export function createGoogle(opts: GoogleOptions = {}): LLMClient {
         })),
         config: {
           ...(req.system !== undefined ? { systemInstruction: req.system } : {}),
-          ...(req.maxTokens !== undefined ? { maxOutputTokens: req.maxTokens } : {}),
+          ...(req.maxTokens && req.maxTokens > 0 ? { maxOutputTokens: req.maxTokens } : {}),
           ...(req.temperature !== undefined ? { temperature: req.temperature } : {}),
         },
       })) as unknown as GoogleResponseLike;
