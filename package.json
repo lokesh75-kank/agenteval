@@ -1,0 +1,98 @@
+{
+  "name": "@lokeshkank/agenteval",
+  "version": "0.1.0",
+  "description": "Reliability and audit-evidence testing for LLM agents. Use when you need an AI agent to behave consistently and cite its sources, especially in regulated or high-stakes domains.",
+  "keywords": [
+    "llm-eval",
+    "agent-evaluation",
+    "ai-testing",
+    "llm-reliability",
+    "rag-evaluation",
+    "llm",
+    "agents",
+    "mcp",
+    "compliance",
+    "audit"
+  ],
+  "license": "MIT",
+  "author": "Lokesh Kank",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lokesh75-kank/agenteval.git"
+  },
+  "homepage": "https://github.com/lokesh75-kank/agenteval#readme",
+  "bugs": {
+    "url": "https://github.com/lokesh75-kank/agenteval/issues"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "agenteval": "./dist/cli/index.js"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./mcp": {
+      "types": "./dist/mcp/server.d.ts",
+      "import": "./dist/mcp/server.js",
+      "require": "./dist/mcp/server.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "bench",
+    "README.md",
+    "AGENTS.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint .",
+    "example": "tsx examples/basic-agent/run.ts",
+    "prepublishOnly": "pnpm build"
+  },
+  "dependencies": {
+    "yaml": "^2.6.1",
+    "commander": "^12.1.0"
+  },
+  "peerDependencies": {
+    "@anthropic-ai/sdk": ">=0.30.0",
+    "@google/genai": ">=0.3.0",
+    "@modelcontextprotocol/sdk": ">=1.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@anthropic-ai/sdk": {
+      "optional": true
+    },
+    "@google/genai": {
+      "optional": true
+    },
+    "@modelcontextprotocol/sdk": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@anthropic-ai/sdk": "^0.40.0",
+    "@google/genai": "^1.0.0",
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@types/node": "^22.10.0",
+    "eslint": "^9.17.0",
+    "tsup": "^8.3.5",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.0",
+    "vitest": "^2.1.8"
+  }
+}
