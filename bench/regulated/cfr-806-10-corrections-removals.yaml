@@ -1,0 +1,46 @@
+# Scenario: 21 CFR 806.10 - Reports of Corrections and Removals
+#
+# Public-domain source: 21 CFR 806.10 (Part 806).
+id: cfr-806-10-corrections-removals
+description: >
+  Agent must explain when a correction or removal must be reported under
+  21 CFR 806.10 and cite the clause.
+tags:
+  - regulated
+input:
+  user_message: >
+    Under 21 CFR Part 806, when must a manufacturer or importer report a device
+    correction or removal to FDA, and what is the timeframe under 806.10?
+asserts:
+  - kind: text_contains_one_of
+    options:
+      - "806.10"
+      - "21 CFR 806.10"
+      - "Part 806"
+  - kind: text_contains_one_of
+    options:
+      - "correction"
+      - "removal"
+  # Trigger: to reduce a risk to health or remedy a violation that may present a risk.
+  - kind: text_contains_one_of
+    options:
+      - "risk to health"
+      - "reduce a risk"
+      - "remedy a violation"
+  # 806.10 deadline is within 10 working days.
+  - kind: text_contains_one_of
+    options:
+      - "10 working days"
+      - "10 work"
+      - "ten working days"
+  - kind: every_claim_has_citation
+judge:
+  rubric: >
+    The response accurately explains that under 806.10 a manufacturer or importer
+    must report, within 10 working days of initiating it, any correction or
+    removal of a device undertaken to reduce a risk to health posed by the device
+    or to remedy a violation of the FD&C Act that may present a risk to health.
+    The clause 21 CFR 806.10 is cited. It may note that 806.20 covers records of
+    corrections and removals not required to be reported.
+  votes: 3
+  passThreshold: 0.66

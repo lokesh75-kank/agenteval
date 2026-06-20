@@ -1,0 +1,43 @@
+# Scenario: 21 CFR 803.53 - Manufacturer 5-day MDR Report
+#
+# Public-domain source: 21 CFR 803.53 (Part 803). Tests the distinction between
+# the 30-day report (803.50) and the 5-work-day report (803.53).
+id: cfr-803-53-5-day-report
+description: >
+  Agent must explain when a 5-work-day MDR is required under 21 CFR 803.53 and
+  cite the clause, distinguishing it from the 30-day report.
+tags:
+  - regulated
+input:
+  user_message: >
+    When is a manufacturer required to submit a 5-day medical device report
+    instead of the standard 30-day report? Cite the controlling regulation.
+asserts:
+  - kind: text_contains_one_of
+    options:
+      - "803.53"
+      - "21 CFR 803.53"
+  - kind: text_contains_one_of
+    options:
+      - "5 work"
+      - "5-work"
+      - "5 working"
+      - "five work"
+  # Triggers: remedial action to prevent unreasonable risk, or FDA written request.
+  - kind: text_contains_one_of
+    options:
+      - "remedial action"
+      - "unreasonable risk"
+      - "substantial harm"
+      - "written request"
+  - kind: every_claim_has_citation
+judge:
+  rubric: >
+    The response accurately explains that under 803.53 a manufacturer must submit
+    a 5-work-day report when it becomes aware that a reportable MDR event
+    necessitates remedial action to prevent an unreasonable risk of substantial
+    harm to public health, or when FDA has made a written request for such
+    reports. It correctly distinguishes this from the 30-day report under 803.50.
+    The clause 21 CFR 803.53 is cited.
+  votes: 3
+  passThreshold: 0.66

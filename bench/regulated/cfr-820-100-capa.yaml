@@ -1,0 +1,46 @@
+# Scenario: 21 CFR 820.100 - Corrective and Preventive Action (CAPA)
+#
+# Public-domain source: 21 CFR 820.100 (FDA Quality System Regulation, Subpart J).
+# A correct answer must name the binding clause AND ground each requirement claim
+# in a citation. Authored fresh from public CFR text; no proprietary fixtures.
+id: cfr-820-100-capa
+description: >
+  Agent must explain the corrective and preventive action (CAPA) procedure
+  requirements under 21 CFR 820.100 and cite the governing clause.
+tags:
+  - regulated
+input:
+  user_message: >
+    Under the FDA Quality System Regulation, what does 21 CFR 820.100 require a
+    medical device manufacturer to establish and maintain for corrective and
+    preventive action?
+asserts:
+  # The answer must reference the binding CAPA clause.
+  - kind: text_contains_one_of
+    options:
+      - "820.100"
+      - "21 CFR 820.100"
+  # CAPA is about procedures for corrective AND preventive action.
+  - kind: text_contains_one_of
+    options:
+      - "corrective and preventive action"
+      - "CAPA"
+  # Core obligations of 820.100: analyze sources, investigate cause, identify action.
+  - kind: text_contains_one_of
+    options:
+      - "procedures"
+      - "investigat"
+      - "cause"
+  # A grounded regulatory answer cites its source.
+  - kind: every_claim_has_citation
+judge:
+  rubric: >
+    The response correctly explains that 21 CFR 820.100 requires manufacturers
+    to establish and maintain procedures for corrective and preventive action,
+    including analyzing quality data to identify causes of nonconformities,
+    investigating the cause, identifying actions needed, and verifying the action.
+    The clause 21 CFR 820.100 is cited. The answer does not fabricate requirements
+    not present in the regulation. Award a pass only if the clause is correctly
+    identified and the requirements summarized are accurate.
+  votes: 3
+  passThreshold: 0.66

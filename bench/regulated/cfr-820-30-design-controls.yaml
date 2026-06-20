@@ -1,0 +1,46 @@
+# Scenario: 21 CFR 820.30 - Design Controls
+#
+# Public-domain source: 21 CFR 820.30 (FDA QSR, Subpart C).
+id: cfr-820-30-design-controls
+description: >
+  Agent must summarize the design control requirements under 21 CFR 820.30 and
+  cite the clause.
+tags:
+  - regulated
+input:
+  user_message: >
+    Which medical devices are subject to design controls under 21 CFR 820.30, and
+    what are the major elements of the design control process the regulation
+    requires?
+asserts:
+  - kind: text_contains_one_of
+    options:
+      - "820.30"
+      - "21 CFR 820.30"
+  - kind: text_contains_one_of
+    options:
+      - "design control"
+      - "Class II"
+      - "Class III"
+  # Major design control elements live in 820.30(b)-(j).
+  - kind: recall_at_k
+    expected:
+      - "design input"
+      - "design output"
+      - "design review"
+      - "design verification"
+      - "design validation"
+      - "design transfer"
+      - "design history file"
+    k: 3
+  - kind: every_claim_has_citation
+judge:
+  rubric: >
+    The response correctly states that 820.30 applies to Class II and Class III
+    devices and certain Class I devices listed in 820.30(a)(2), and outlines the
+    design control elements: design and development planning, design input,
+    design output, design review, design verification, design validation, design
+    transfer, design changes, and the design history file. The clause 21 CFR
+    820.30 is cited. No fabricated requirements.
+  votes: 3
+  passThreshold: 0.66

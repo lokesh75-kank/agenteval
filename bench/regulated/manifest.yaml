@@ -1,0 +1,29 @@
+# Regulated QMS benchmark - scenario manifest.
+#
+# Each entry is a single-Scenario YAML file in this directory, matching the
+# core/types.ts Scenario shape. The suite loader reads this manifest to discover
+# scenarios. All scenarios are tagged `regulated`.
+#
+# Sourcing: every scenario is authored from PUBLIC-DOMAIN U.S. federal regulatory
+# text (eCFR / FDA, Title 21). No proprietary or customer data is used.
+name: regulated-qms
+description: >
+  FDA Quality System Regulation (21 CFR 820), Medical Device Reporting
+  (21 CFR 803), Corrections and Removals (21 CFR 806), and Electronic Records /
+  Signatures (21 CFR 11). Each scenario asks a regulated-QMS question whose
+  correct answer must cite the governing CFR clause.
+tags:
+  - regulated
+scenarios:
+  - cfr-820-100-capa.yaml
+  - cfr-820-100-a-subclauses.yaml
+  - cfr-820-30-design-controls.yaml
+  - cfr-820-30-g-design-validation.yaml
+  - cfr-820-198-complaint-files.yaml
+  - cfr-820-50-purchasing-controls.yaml
+  - cfr-803-50-mdr-30-day.yaml
+  - cfr-803-53-5-day-report.yaml
+  - cfr-806-10-corrections-removals.yaml
+  - cfr-11-10-electronic-records.yaml
+  - cfr-11-200-electronic-signatures.yaml
+  - cfr-out-of-scope-refusal.yaml

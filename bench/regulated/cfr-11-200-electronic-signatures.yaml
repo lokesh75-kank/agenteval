@@ -1,0 +1,44 @@
+# Scenario: 21 CFR 11.200 - Electronic Signature Components and Controls
+#
+# Public-domain source: 21 CFR 11.200 (Part 11).
+id: cfr-11-200-electronic-signatures
+description: >
+  Agent must explain the electronic signature components and controls under
+  21 CFR 11.200 and cite the clause.
+tags:
+  - regulated
+input:
+  user_message: >
+    Under 21 CFR 11.200, what are the requirements for electronic signatures that
+    are not based on biometrics, including the use of identification components?
+asserts:
+  - kind: text_contains_one_of
+    options:
+      - "11.200"
+      - "21 CFR 11.200"
+  - kind: text_contains_one_of
+    options:
+      - "electronic signature"
+      - "identification code"
+      - "password"
+  # Two distinct components; first signing in a session uses both, then one.
+  - kind: text_contains_one_of
+    options:
+      - "two distinct"
+      - "two components"
+      - "single continuous"
+      - "biometric"
+  - kind: every_claim_has_citation
+judge:
+  rubric: >
+    The response accurately explains that under 11.200 non-biometric electronic
+    signatures must employ at least two distinct identification components such as
+    an identification code and a password; that when an individual executes a
+    series of signings during a single continuous controlled session the first
+    signing uses all components and subsequent signings use at least one
+    component; and that signatures not in a continuous session use all components
+    each time. It notes signatures must be used only by their genuine owners and
+    that biometric signatures (11.200(b)) must be designed so they cannot be used
+    by anyone other than the owner. The clause 21 CFR 11.200 is cited.
+  votes: 3
+  passThreshold: 0.66

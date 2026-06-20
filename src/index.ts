@@ -29,12 +29,46 @@ export type {
   SuiteReport,
 } from './core/types.js';
 
-// ── Module surfaces (wired in Phase 2) ──
-// export { evaluateAssertions, summariseRun } from './assertions/index.js';
-// export * as metrics from './metrics/index.js';
-// export * as grounding from './grounding/index.js';
-// export { judge } from './judge/index.js';
-// export { runScenario, runSuite } from './core/runner.js';
-// export { loadScenarios, loadScenario } from './core/loader.js';
-// export * as report from './report/index.js';
-// export * as ingest from './ingest/index.js';
+// ── Runner (the core entry point) ──
+export { runScenario, runSuite, type RunOptions } from './core/runner.js';
+export { loadScenario, loadScenarios, parseScenario } from './core/loader.js';
+
+// ── Assertions ──
+export { evaluateAssertions, summariseRun, type AssertionContext } from './assertions/index.js';
+
+// ── Grounding (the audit/citation layer) ──
+export {
+  checkGrounding,
+  detectUncitedClaims,
+  parseCitations,
+  resolveCitations,
+  quoteMatchesSource,
+  findOrphanReferences,
+  GENERIC_PRESET,
+  REGULATED_PRESET,
+  type GroundingConfig,
+  type GroundingResult,
+  type UncitedClaim,
+} from './grounding/index.js';
+
+// ── Metrics ──
+export * as metrics from './metrics/index.js';
+export { computeRecordMetric, type ComputedRecordMetric } from './metrics/record.js';
+
+// ── LLM clients + judge ──
+export {
+  createAnthropic,
+  createGoogle,
+  estimateCost,
+  type LLMClient,
+  type LLMRequest,
+  type LLMResponse,
+  type LLMMessage,
+} from './llm/index.js';
+export { judge, type JudgeResult, type JudgeArgs } from './judge/index.js';
+
+// ── Reports (console / json / audit-grade HTML attestation) ──
+export { renderConsole, renderJson, renderHtml, type HtmlReportMeta } from './report/index.js';
+
+// ── Ingest (evaluate traces you already collect) ──
+export { otelToTrace, langsmithToTrace } from './ingest/index.js';

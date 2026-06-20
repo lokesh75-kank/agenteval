@@ -1,0 +1,45 @@
+# Scenario: 21 CFR 11.10 - Controls for Closed Systems (electronic records)
+#
+# Public-domain source: 21 CFR 11.10 (Part 11, electronic records / signatures).
+id: cfr-11-10-electronic-records
+description: >
+  Agent must explain the controls required for closed systems under 21 CFR 11.10
+  and cite the clause.
+tags:
+  - regulated
+input:
+  user_message: >
+    What controls does 21 CFR 11.10 require for closed systems used to create,
+    modify, maintain, or transmit electronic records, to ensure authenticity and
+    integrity?
+asserts:
+  - kind: text_contains_one_of
+    options:
+      - "11.10"
+      - "21 CFR 11.10"
+      - "Part 11"
+  - kind: text_contains_one_of
+    options:
+      - "closed system"
+      - "electronic record"
+  # 11.10 controls: validation, audit trails, access limits, etc.
+  - kind: recall_at_k
+    expected:
+      - "validation"
+      - "audit trail"
+      - "access"
+      - "authority check"
+      - "accurate and complete copies"
+    k: 2
+  - kind: every_claim_has_citation
+judge:
+  rubric: >
+    The response accurately explains that 11.10 requires persons using closed
+    systems to employ procedures and controls including system validation; the
+    ability to generate accurate and complete copies of records; record
+    protection and retention; limiting system access to authorized individuals;
+    secure, computer-generated, time-stamped audit trails; operational and
+    authority checks; and device checks. The clause 21 CFR 11.10 is cited. No
+    fabricated controls.
+  votes: 3
+  passThreshold: 0.66

@@ -1,0 +1,40 @@
+# Scenario: 21 CFR 820.30(g) - Design Validation
+#
+# Public-domain source: 21 CFR 820.30(g). Tests precise sub-clause grounding
+# including the software-validation and risk-analysis requirements.
+id: cfr-820-30-g-design-validation
+description: >
+  Agent must explain design validation under 21 CFR 820.30(g), including the
+  software and risk-analysis requirements, and cite the sub-clause.
+tags:
+  - regulated
+input:
+  user_message: >
+    What does 21 CFR 820.30(g) require for design validation, and how does it
+    differ from design verification under 820.30(f)?
+asserts:
+  - kind: text_contains_one_of
+    options:
+      - "820.30(g)"
+      - "820.30"
+  - kind: text_contains_one_of
+    options:
+      - "design validation"
+      - "actual or simulated use"
+      - "defined operating conditions"
+  # 820.30(g) explicitly calls out software validation and risk analysis.
+  - kind: text_contains_one_of
+    options:
+      - "software"
+      - "risk analysis"
+  - kind: every_claim_has_citation
+judge:
+  rubric: >
+    The response accurately explains that 820.30(g) requires design validation
+    under defined operating conditions on initial production units, lots, or
+    batches; that validation ensures devices conform to defined user needs and
+    intended uses; that it includes software validation and risk analysis where
+    appropriate; and that validation differs from verification (820.30(f), which
+    confirms design output meets design input). The sub-clause 820.30(g) is cited.
+  votes: 3
+  passThreshold: 0.66

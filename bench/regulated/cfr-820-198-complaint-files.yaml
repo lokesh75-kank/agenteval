@@ -1,0 +1,40 @@
+# Scenario: 21 CFR 820.198 - Complaint Files
+#
+# Public-domain source: 21 CFR 820.198 (FDA QSR, Subpart M).
+id: cfr-820-198-complaint-files
+description: >
+  Agent must explain complaint handling and complaint file requirements under
+  21 CFR 820.198 and cite the clause.
+tags:
+  - regulated
+input:
+  user_message: >
+    What does 21 CFR 820.198 require for handling complaints, and when must a
+    complaint be evaluated to determine whether it is an MDR-reportable event?
+asserts:
+  - kind: text_contains_one_of
+    options:
+      - "820.198"
+      - "21 CFR 820.198"
+  - kind: text_contains_one_of
+    options:
+      - "complaint"
+      - "formally designated unit"
+  # 820.198(a) requires procedures; (d) covers MDR-reportable evaluation.
+  - kind: text_contains_one_of
+    options:
+      - "investigat"
+      - "MDR"
+      - "reportable"
+  - kind: every_claim_has_citation
+judge:
+  rubric: >
+    The response accurately explains that 820.198 requires a formally designated
+    unit to receive, review, and evaluate complaints; that procedures must ensure
+    complaints are processed uniformly and in a timely manner, evaluated to
+    determine whether an investigation is needed, and evaluated to determine
+    whether the complaint represents an event reportable under Part 803 (MDR);
+    and that records of investigation must be kept. The clause 21 CFR 820.198 is
+    cited. No fabricated requirements.
+  votes: 3
+  passThreshold: 0.66

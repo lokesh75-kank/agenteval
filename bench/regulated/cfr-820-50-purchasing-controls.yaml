@@ -1,0 +1,42 @@
+# Scenario: 21 CFR 820.50 - Purchasing Controls
+#
+# Public-domain source: 21 CFR 820.50 (FDA QSR, Subpart E).
+id: cfr-820-50-purchasing-controls
+description: >
+  Agent must explain purchasing / supplier control requirements under
+  21 CFR 820.50 and cite the clause.
+tags:
+  - regulated
+input:
+  user_message: >
+    Under 21 CFR 820.50, what must a manufacturer establish to ensure that
+    purchased or otherwise received product and services conform to specified
+    requirements, including evaluation of suppliers?
+asserts:
+  - kind: text_contains_one_of
+    options:
+      - "820.50"
+      - "21 CFR 820.50"
+  - kind: text_contains_one_of
+    options:
+      - "supplier"
+      - "purchasing"
+      - "contractor"
+      - "consultant"
+  # 820.50(a) evaluation of suppliers; 820.50(b) purchasing data.
+  - kind: text_contains_one_of
+    options:
+      - "evaluat"
+      - "purchasing data"
+      - "specified requirements"
+  - kind: every_claim_has_citation
+judge:
+  rubric: >
+    The response accurately explains that 820.50 requires procedures to ensure
+    purchased and received product and services conform to specified requirements;
+    that suppliers, contractors, and consultants must be evaluated and selected on
+    their ability to meet requirements (820.50(a)); and that purchasing data must
+    clearly describe or reference the specified requirements (820.50(b)). The
+    clause 21 CFR 820.50 is cited. No fabricated requirements.
+  votes: 3
+  passThreshold: 0.66

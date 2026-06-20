@@ -1,0 +1,42 @@
+# Scenario: 21 CFR 803.50 - Manufacturer MDR Reporting (30-day)
+#
+# Public-domain source: 21 CFR 803.50 (Medical Device Reporting, Part 803).
+id: cfr-803-50-mdr-30-day
+description: >
+  Agent must explain when a manufacturer must submit an MDR under 21 CFR 803.50
+  and the reporting timeframe, citing the clause.
+tags:
+  - regulated
+input:
+  user_message: >
+    Under 21 CFR Part 803, when must a device manufacturer submit a medical
+    device report (MDR), and what is the reporting timeframe under 803.50?
+asserts:
+  - kind: text_contains_one_of
+    options:
+      - "803.50"
+      - "21 CFR 803.50"
+      - "Part 803"
+  # The triggers: death, serious injury, malfunction likely to cause death/injury.
+  - kind: text_contains_one_of
+    options:
+      - "death"
+      - "serious injury"
+      - "malfunction"
+  # 803.50 standard manufacturer deadline is 30 calendar days.
+  - kind: text_contains_one_of
+    options:
+      - "30 calendar days"
+      - "30 days"
+  - kind: every_claim_has_citation
+judge:
+  rubric: >
+    The response accurately explains that under 803.50 a manufacturer must submit
+    an MDR no later than 30 calendar days after becoming aware of information
+    reasonably suggesting that one of its marketed devices may have caused or
+    contributed to a death or serious injury, or has malfunctioned and the
+    malfunction would be likely to cause or contribute to a death or serious
+    injury if it were to recur. The clause 21 CFR 803.50 is cited. Note that
+    803.53 covers separate 5-day reports; do not conflate the two deadlines.
+  votes: 3
+  passThreshold: 0.66

@@ -1,0 +1,42 @@
+# Scenario: 21 CFR 820.100(a) sub-clauses - CAPA procedure contents
+#
+# Public-domain source: 21 CFR 820.100(a)(1)-(7). Tests sub-clause recall:
+# the seven enumerated elements a CAPA procedure must address.
+id: cfr-820-100-a-subclauses
+description: >
+  Agent must enumerate the elements a CAPA procedure must address under
+  21 CFR 820.100(a) and cite the sub-clause.
+tags:
+  - regulated
+input:
+  user_message: >
+    What specific elements must a corrective and preventive action procedure
+    address under 21 CFR 820.100(a)? List the enumerated requirements.
+asserts:
+  - kind: text_contains_one_of
+    options:
+      - "820.100(a)"
+      - "820.100"
+  # recall_at_k over the enumerated 820.100(a) elements; require at least 3 of them.
+  - kind: recall_at_k
+    expected:
+      - "analyzing"
+      - "investigating"
+      - "identifying the action"
+      - "verifying"
+      - "implementing"
+      - "disseminating"
+      - "management"
+    k: 3
+  - kind: every_claim_has_citation
+judge:
+  rubric: >
+    The response accurately lists elements that a CAPA procedure must address
+    under 21 CFR 820.100(a): analyzing processes and quality data to identify
+    causes of nonconformities; investigating the cause; identifying the action
+    needed to correct and prevent recurrence; verifying or validating the action;
+    implementing and recording changes; disseminating information; and submitting
+    relevant information to management for review. The sub-clause 820.100(a) is
+    cited. No fabricated elements.
+  votes: 3
+  passThreshold: 0.66
