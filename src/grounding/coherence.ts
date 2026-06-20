@@ -7,9 +7,7 @@
 // the references the drafting agents cannot self-verify, since each agent owns
 // only its own slice. This deterministic pass surfaces them as evidence gaps.
 //
-// Generalized from Deminn's coherenceCheck, which mapped each tag kind
-// (CA-/PA-/RC-) to a hard-coded authoritative section. This version is
-// domain-agnostic: it has no owner map, so it flags any tag that spans two or
+// Domain-agnostic: it has no owner map, so it flags any tag that spans two or
 // more sections. The reported shape is the generic { tag, referencingSectionIds }.
 
 /** One section of a multi-part document. */
@@ -57,8 +55,7 @@ function findTags(body: string): Set<string> {
 /**
  * Find tags that appear in two or more sections. These cross-section tags have
  * no single owning section, so a reader cannot verify the tag was defined where
- * it should be - the generic analogue of Deminn's "referenced but not defined
- * in the authoritative section" check.
+ * it should be - a "referenced but never defined in an authoritative section" check.
  *
  * Tags confined to a single section are treated as locally defined and trusted
  * (they are both introduced and used in the same place), so they are not

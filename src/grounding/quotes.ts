@@ -3,8 +3,7 @@
 // A citation can resolve to a real source and still misquote it. This module
 // checks whether a quoted body actually appears in its source text - either
 // verbatim or as a near-verbatim contiguous run - using a longest-common-
-// substring similarity. Pure functions, extracted from Deminn's quoteValidator
-// with all Prisma / span-rewriting coupling stripped.
+// substring similarity. Pure functions, with no DB or markup-rewriting coupling.
 
 const HTML_TAG_RE = /<[^>]+>/g;
 // Drop every char that is not a unicode letter, number, or whitespace, then

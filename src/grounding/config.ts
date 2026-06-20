@@ -11,9 +11,7 @@
 // Two presets ship by default:
 //   - GENERIC_PRESET   - sensible defaults for any factual assistant.
 //   - REGULATED_PRESET  - CFR/ISO/IEC/MDR/IVDR/USC regulation patterns plus
-//                         regulatory imperative markers. Extracted from the
-//                         Deminn regulatoryClaimDetector regex set, cleaned of
-//                         all DB / orchestration coupling.
+//                         regulatory imperative markers, for compliance domains.
 
 /** Configuration for what counts as a citable claim in agent output. */
 export interface GroundingConfig {
@@ -40,8 +38,8 @@ export interface GroundingConfig {
 // Regulation-name patterns. Match a specific regulation by jurisdictional
 // shorthand (CFR, ISO, IEC, MDR, IVDR, USC). Subpart / section / annex suffixes
 // are optional - the imperative-near-pattern check is what promotes a match
-// from a passing mention to an asserted CLAIM. Extracted verbatim (logic-only)
-// from Deminn's regulatoryClaimDetector REG_PATTERNS.
+// from a passing mention to an asserted CLAIM. Logic-only regex; extend or
+// replace these for your own domain.
 const REGULATED_CLAIM_PATTERNS: RegExp[] = [
   /\b\d+\s*CFR\s*(?:Part\s*)?\d+(?:\.\d+(?:\([a-z\d]+\))*)?/gi,
   /\bISO\s+\d+(?:[-:]?\d{4})?(?:\s+(?:Section|Clause)\s*[\d.]+)?/gi,

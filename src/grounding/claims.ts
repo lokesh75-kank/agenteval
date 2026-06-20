@@ -6,9 +6,9 @@
 // no model call, no DB hit - so it can run inside any post-generation pass at
 // effectively zero latency.
 //
-// Pure generalization of Deminn's regulatoryClaimDetector: the regex set moved
-// into config.ts (GroundingConfig.claimPatterns + imperativeMarkers) so the
-// same algorithm serves a regulated domain or a generic assistant.
+// The claim patterns live in config.ts (GroundingConfig.claimPatterns +
+// imperativeMarkers) so the same algorithm serves a regulated domain or a
+// generic assistant - just swap the preset.
 
 import type { GroundingConfig } from './config.js';
 import { GENERIC_PRESET } from './config.js';

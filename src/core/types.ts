@@ -1,10 +1,9 @@
 // Scenario + assertion + result types.
 //
-// The Assertion vocabulary is extracted from Deminn's production eval suite
-// (src/lib/orchestration/__evals__/types.ts) - it is already domain-agnostic.
-// The Scenario shape is generalized: Deminn's ScenarioContext (curator/capa/
-// persona) coupling is removed; a scenario here is just an input + assertions
-// (+ an optional LLM-judge rubric), runnable against any AgentAdapter.
+// The Assertion vocabulary is generalized from the evaluation layer of Deminn
+// (a regulated quality/compliance agent system) and is domain-agnostic. The
+// Scenario shape drops all domain coupling: a scenario here is just an input +
+// assertions (+ an optional LLM-judge rubric), runnable against any AgentAdapter.
 
 import type { AgentInput, AgentTrace } from './trace.js';
 
@@ -48,8 +47,8 @@ export interface JudgeSpec {
 }
 
 /**
- * One eval scenario. Loaded from YAML or constructed in code. Generalized from
- * Deminn's Scenario: no domain context, just input + assertions (+ judge).
+ * One eval scenario. Loaded from YAML or constructed in code. No domain
+ * context - just input + assertions (+ an optional judge).
  */
 export interface Scenario {
   id: string;

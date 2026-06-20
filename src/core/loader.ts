@@ -2,8 +2,7 @@
 //
 // A scenario file is one Scenario (see core/types.ts) serialized as YAML. A
 // directory of *.yaml files, or a manifest.yaml listing files, both load to a
-// flat Scenario[]. Generalized from Deminn's loader (which was bound to its
-// fixed scenarios/ directory and domain ScenarioContext).
+// flat Scenario[]. No fixed directory layout or domain coupling.
 
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, dirname, isAbsolute, resolve } from 'node:path';

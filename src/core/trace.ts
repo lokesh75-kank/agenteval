@@ -6,8 +6,7 @@
 // returns an AgentTrace. Everything downstream - assertions, grounding checks,
 // the judge, reports - reads this shape and nothing agent-specific.
 //
-// This is a clean-room generalization of Deminn's internal CapturedRun
-// (see core/types.ts `CapturedRun`/`CapturedToolCall`), widened so it does not
+// AgentTrace is a generalized, domain-agnostic run representation: it does not
 // assume a tool-calling loop, a regulated domain, or any storage backend.
 
 /** A single tool / function call the agent made during a run. */

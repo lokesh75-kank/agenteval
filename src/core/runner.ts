@@ -27,7 +27,7 @@ export interface RunOptions {
   runs?: number;
   /**
    * Fraction of runs that must pass for the scenario to pass overall.
-   * Default 2/3 (Deminn's "2 of 3" convention). With runs=1 this requires a
+   * Default 2/3 (a "2 of 3" majority convention). With runs=1 this requires a
    * clean pass.
    */
   passThreshold?: number;

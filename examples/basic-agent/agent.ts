@@ -1,4 +1,4 @@
-// A tiny, dependency-free example "agent" - NOT Deminn, NOT a real LLM. It
+// A tiny, dependency-free example "agent" - not a real LLM. It
 // exists only to demonstrate how AgentEval wraps and evaluates an arbitrary
 // agent. Swap this out for your real agent (LangGraph, an Anthropic/OpenAI
 // loop, an HTTP endpoint, ...).

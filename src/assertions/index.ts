@@ -2,10 +2,8 @@
 //
 // Each Assertion `kind` has a small, self-contained handler; the evaluator
 // returns one AssertionResult per assertion (pass/fail + a human detail string
-// the runner prints on failure). This is a clean-room generalization of
-// Deminn's CapturedRun assertion evaluator: it reads the agent-agnostic
-// AgentTrace shape and delegates all grounding logic to the grounding module
-// rather than scanning for Deminn-internal cleanup markers ([E?], paraphrase).
+// the runner prints on failure). It reads the agent-agnostic AgentTrace shape
+// and delegates all grounding logic to the grounding module.
 
 import {
   detectUncitedClaims,
@@ -261,8 +259,8 @@ function evaluateOne(
 
     case 'refusal': {
       // Tolerant heuristic for the agent declining / deferring rather than
-      // answering. Kept generic (no Deminn workflow phrasing) so it works for
-      // any agent: matches common "I can't / won't / that's outside ..." forms
+      // answering. Kept generic so it works for any agent: matches common
+      // "I can't / won't / that's outside ..." forms
       // and explicit safe-completion language.
       const t = trace.finalText;
       const refusalPattern =

@@ -1,7 +1,7 @@
 // Citation parsing and resolution.
 //
-// Two pure pieces, both DB-free (Deminn's original validator resolved against
-// Prisma; here resolution is pure set-membership against an injected id set):
+// Two pure pieces, both DB-free (resolution is pure set-membership against an
+// injected id set, so the caller decides what counts as a known source):
 //
 //   parseCitations(text)         -> every inline reference token the text emits
 //   resolveCitations(refs, ids)  -> split refs into resolved / unresolved
