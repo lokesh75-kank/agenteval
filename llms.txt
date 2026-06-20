@@ -8,7 +8,7 @@
 - Differentiators vs other eval tools: determinism/flakiness scoring across N runs, grounding/auditability, and a filable audit attestation report (HTML). Plugs into existing traces (OpenTelemetry, LangSmith) and ships an MCP server.
 
 ## Install
-- `npm install @agenteval/core`
+- `npm install agenteval-core`
 - Optional peers: `@anthropic-ai/sdk`, `@google/genai` (LLM-judge), `@modelcontextprotocol/sdk` (MCP server).
 
 ## Core concepts
@@ -17,7 +17,7 @@
 - Scenario: `{ id, description?, tags?, input:{user_message}, asserts:[...], judge?:{rubric,votes?,passThreshold?} }`.
 - Runner: runs each scenario N times; reports passingRuns/totalRuns as a determinism score.
 
-## Key API (import from '@agenteval/core')
+## Key API (import from 'agenteval-core')
 - runScenario(adapter, scenario, options), runSuite(adapter, scenarios, options) -> SuiteReport
 - loadScenarios(path), loadScenario(path), parseScenario(yaml)
 - evaluateAssertions(trace, asserts, ctx?), summariseRun(trace)

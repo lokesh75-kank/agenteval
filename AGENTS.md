@@ -8,12 +8,12 @@ Evaluates the reliability of an LLM agent: wrap the user's agent, run scenarios 
 
 ## Canonical integration (do this)
 
-1. **Install:** `npm install @agenteval/core`
+1. **Install:** `npm install agenteval-core`
 
 2. **Create `agenteval.config.mjs`** that default-exports an `adapter` wrapping the user's agent. The adapter's `run(input)` must return an `AgentTrace`:
 
 ```js
-import { defineAdapter } from '@agenteval/core';
+import { defineAdapter } from 'agenteval-core';
 
 const adapter = defineAdapter({
   async run(input) {
@@ -69,7 +69,7 @@ Only `input`, `finalText`, and `toolCalls` are required. Provide `citations` to 
 ## Programmatic API (if not using the CLI)
 
 ```js
-import { runSuite, loadScenarios, renderConsole, renderHtml } from '@agenteval/core';
+import { runSuite, loadScenarios, renderConsole, renderHtml } from 'agenteval-core';
 const report = await runSuite(adapter, loadScenarios('./scenarios'), { runs: 5 });
 console.log(renderConsole(report));
 ```

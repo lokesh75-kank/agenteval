@@ -23,8 +23,8 @@ It plugs into traces you already collect (OpenTelemetry, LangSmith) and ships an
 ## Install
 
 ```bash
-npm install @agenteval/core
-# or: pnpm add @agenteval/core
+npm install agenteval-core
+# or: pnpm add agenteval-core
 ```
 
 LLM provider SDKs (`@anthropic-ai/sdk`, `@google/genai`) and the MCP SDK are **optional** - install them only if you use the LLM-judge or the MCP server.
@@ -34,7 +34,7 @@ LLM provider SDKs (`@anthropic-ai/sdk`, `@google/genai`) and the MCP SDK are **o
 **1. Wrap your agent in an adapter** (the only integration point):
 
 ```ts
-import { defineAdapter } from '@agenteval/core';
+import { defineAdapter } from 'agenteval-core';
 
 const adapter = defineAdapter({
   async run(input) {
@@ -67,7 +67,7 @@ asserts:
 **3. Run it** - N times, to measure determinism:
 
 ```ts
-import { runSuite, loadScenarios, renderConsole, renderHtml } from '@agenteval/core';
+import { runSuite, loadScenarios, renderConsole, renderHtml } from 'agenteval-core';
 
 const scenarios = loadScenarios('./scenarios');
 const report = await runSuite(adapter, scenarios, { runs: 5 });
@@ -101,7 +101,7 @@ The CLI loads `agenteval.config.mjs`, which default-exports your `adapter` and o
 ## Grounding (the audit layer)
 
 ```ts
-import { checkGrounding, REGULATED_PRESET } from '@agenteval/core';
+import { checkGrounding, REGULATED_PRESET } from 'agenteval-core';
 
 const result = checkGrounding(trace, { config: REGULATED_PRESET, knownSources });
 // -> { uncitedClaims, unresolvedCitations, quoteMismatches }
@@ -112,7 +112,7 @@ Ships a `GENERIC_PRESET` (any assistant) and a `REGULATED_PRESET` (CFR/ISO/IEC/M
 ## LLM-as-judge
 
 ```ts
-import { judge, createAnthropic } from '@agenteval/core';
+import { judge, createAnthropic } from 'agenteval-core';
 
 const verdict = await judge({
   trace,
@@ -127,7 +127,7 @@ const verdict = await judge({
 Already collecting traces? Evaluate them without changing your agent:
 
 ```ts
-import { otelToTrace, langsmithToTrace } from '@agenteval/core';
+import { otelToTrace, langsmithToTrace } from 'agenteval-core';
 const trace = langsmithToTrace(myLangSmithRun);
 ```
 

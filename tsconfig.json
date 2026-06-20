@@ -17,7 +17,7 @@
     "outDir": "dist",
     "rootDir": ".",
     "paths": {
-      "@agenteval/core": ["./src/index.ts"]
+      "agenteval-core": ["./src/index.ts"]
     }
   },
   "include": ["src", "test", "examples", "bench"],
