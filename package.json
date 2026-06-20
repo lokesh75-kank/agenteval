@@ -52,6 +52,7 @@
     "bench",
     "README.md",
     "AGENTS.md",
+    "llms.txt",
     "LICENSE"
   ],
   "scripts": {
