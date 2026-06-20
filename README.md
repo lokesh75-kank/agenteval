@@ -1,5 +1,9 @@
 # AgentEval
 
+[![CI](https://github.com/lokesh75-kank/agenteval/actions/workflows/ci.yml/badge.svg)](https://github.com/lokesh75-kank/agenteval/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/agenteval-core.svg)](https://www.npmjs.com/package/agenteval-core)
+[![license](https://img.shields.io/npm/l/agenteval-core.svg)](./LICENSE)
+
 **Reliability and audit-evidence testing for LLM agents.** Use it when you need an AI agent to behave *consistently* and *cite its sources* - especially in regulated or high-stakes domains (health, fintech, legal, compliance).
 
 Think of it as **unit tests + a crash-test rating for agents**: wrap any agent, define what "good" looks like, run it N times, and get back a scorecard, a determinism (flakiness) score, and an **audit-grade reliability report** your QA or compliance team can actually file.
