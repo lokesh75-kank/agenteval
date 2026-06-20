@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import { estimateCost, PRICING, DEFAULT_PRICING } from './cost.js';
 import { createAnthropic, DEFAULT_ANTHROPIC_MODEL } from './anthropic.js';
 import { createGoogle, DEFAULT_GOOGLE_MODEL } from './google.js';

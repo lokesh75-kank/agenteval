@@ -11,7 +11,7 @@
 // else (scenarios path, runs, llm, grounding) is optional.
 
 import { writeFileSync, readFileSync, existsSync, mkdirSync } from 'node:fs';
-import { resolve, dirname, join } from 'node:path';
+import { resolve, join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { Command } from 'commander';
 

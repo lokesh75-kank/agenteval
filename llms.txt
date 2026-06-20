@@ -1,0 +1,45 @@
+# AgentEval
+
+> Reliability and audit-evidence testing for LLM agents. Wrap any agent, assert its behavior, run N times to measure determinism (flakiness), check that claims are grounded in citations, and emit an audit-grade reliability report. Built for regulated and high-stakes domains (health, fintech, legal, compliance). TypeScript, ESM, Node >= 20. MIT.
+
+## What it is
+- Like unit tests + a crash-test rating for AI agents.
+- Three eval layers: deterministic structural assertions, grounding/citation validation, and an optional LLM-as-judge with self-consistency.
+- Differentiators vs other eval tools: determinism/flakiness scoring across N runs, grounding/auditability, and a filable audit attestation report (HTML). Plugs into existing traces (OpenTelemetry, LangSmith) and ships an MCP server.
+
+## Install
+- `npm install @lokeshkank/agenteval`
+- Optional peers: `@anthropic-ai/sdk`, `@google/genai` (LLM-judge), `@modelcontextprotocol/sdk` (MCP server).
+
+## Core concepts
+- AgentAdapter: the one interface you implement - `run(input) => AgentTrace`. Wraps any agent.
+- AgentTrace: `{ input:{user_message}, finalText, toolCalls[], citations?, steps?, iterations?, tokens?, durationMs?, error? }`.
+- Scenario: `{ id, description?, tags?, input:{user_message}, asserts:[...], judge?:{rubric,votes?,passThreshold?} }`.
+- Runner: runs each scenario N times; reports passingRuns/totalRuns as a determinism score.
+
+## Key API (import from '@lokeshkank/agenteval')
+- runScenario(adapter, scenario, options), runSuite(adapter, scenarios, options) -> SuiteReport
+- loadScenarios(path), loadScenario(path), parseScenario(yaml)
+- evaluateAssertions(trace, asserts, ctx?), summariseRun(trace)
+- checkGrounding(trace, opts?), detectUncitedClaims, parseCitations, resolveCitations, quoteMatchesSource, GENERIC_PRESET, REGULATED_PRESET
+- judge({trace, rubric, llm, votes?, passThreshold?}), createAnthropic(opts?), createGoogle(opts?), estimateCost(model,in,out)
+- renderConsole(report), renderJson(report), renderHtml(report, meta?)
+- otelToTrace(spans), langsmithToTrace(run)
+- metrics.recallAtK / precisionAtK / reciprocalRank / mean / summarize / diffSummaries; computeRecordMetric(input)
+
+## Assertion kinds
+tool_called, tool_not_called, tool_input_contains_one_of, text_contains, text_contains_one_of, text_does_not_contain, output_contains_one_of, iteration_count_under, iteration_count_at_least, recall_at_k, every_claim_has_citation, citations_resolve, quote_matches_source, refusal
+
+## CLI
+- agenteval init | run [scenarios] | baseline [scenarios] | check [scenarios]
+- Flags: --config <file>, --runs <n>, --json <file>, --html <file>, --baseline <file>, --tolerance <n>
+- Config: agenteval.config.mjs default-exports { adapter, scenarios?, runs?, passThreshold?, llm?, assertion? }
+
+## MCP server
+- Tools: evaluate_agent {trace, asserts, preset?}, check_grounding {text|trace, preset?, knownSources?}, get_report {report, format?}
+- Entry: dist/mcp/server.js (createServer(), main()).
+
+## Docs
+- README.md - human quickstart and full feature tour.
+- AGENTS.md - canonical integration pattern for AI coding agents.
+- bench/regulated/ - starter benchmark from public-domain US regulatory text (eCFR/FDA).

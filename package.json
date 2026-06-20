@@ -29,7 +29,8 @@
     "node": ">=20"
   },
   "bin": {
-    "agenteval": "./dist/cli/index.js"
+    "agenteval": "./dist/cli/index.js",
+    "agenteval-mcp": "./dist/mcp/server.js"
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

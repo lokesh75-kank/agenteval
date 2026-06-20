@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 // AgentEval MCP server.
 //
 // Exposes AgentEval to coding agents (Claude, Codex, Cursor) as callable tools.
