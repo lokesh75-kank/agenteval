@@ -183,7 +183,7 @@ program
 
 const CONFIG_TEMPLATE = `// AgentEval configuration.
 // Wrap your agent in an adapter: given an input, return an AgentTrace.
-import { defineAdapter } from '@lokeshkank/agenteval';
+import { defineAdapter } from '@agenteval/core';
 
 const adapter = defineAdapter({
   async run(input) {

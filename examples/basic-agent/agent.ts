@@ -3,7 +3,7 @@
 // agent. Swap this out for your real agent (LangGraph, an Anthropic/OpenAI
 // loop, an HTTP endpoint, ...).
 
-import type { AgentTrace, AgentInput } from '@lokeshkank/agenteval';
+import type { AgentTrace, AgentInput } from '@agenteval/core';
 
 /**
  * A pretend customer-support agent for a SaaS billing product. It "looks up"

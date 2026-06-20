@@ -9,7 +9,7 @@ import { writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
-import { defineAdapter, runSuite, renderConsole, renderHtml, type Scenario } from '@lokeshkank/agenteval';
+import { defineAdapter, runSuite, renderConsole, renderHtml, type Scenario } from '@agenteval/core';
 import { supportAgent } from './agent.js';
 
 const adapter = defineAdapter({
