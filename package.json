@@ -1,6 +1,6 @@
 {
   "name": "agenteval-core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Reliability and audit-ready testing for LLM agents. Use when you need an AI agent to behave consistently and cite its sources, especially in regulated or high-stakes domains.",
   "keywords": [
     "llm-eval",

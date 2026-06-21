@@ -4,6 +4,18 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/), and the project aims to follow
 [Semantic Versioning](https://semver.org/).
 
+## [0.1.1] - 2026-06-21
+
+### Added
+- `case-studies/aaro-property-tax/` - real-agent validation: four recorded runs
+  of an autonomous web agent on the same task scored at 25% determinism (1/4).
+- `CHANGELOG.md` and `CONTRIBUTING.md`.
+
+### Changed
+- Trimmed the published package (source maps excluded): ~328KB -> ~113KB.
+- Reframed reporting language as "audit-ready" (no implication of certified compliance).
+- Scrubbed internal implementation references from public source comments.
+
 ## [0.1.0] - 2026-06-20
 
 Initial public release.
