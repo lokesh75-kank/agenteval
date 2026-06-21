@@ -31,7 +31,7 @@ const replay = defineAdapter({
 
 const first = traces[0] as AgentTrace;
 const scenario: Scenario = {
-  id: 'pune-property-tax-receipt',
+  id: 'property-tax-receipt',
   description: 'Retrieve the property-tax payment receipt from the municipal portal.',
   input: first.input,
   asserts: [

@@ -1,14 +1,14 @@
 [
   {
     "input": {
-      "user_message": "Retrieve property tax payment receipt for Pune Municipal Corporation assessment number O/4/42/XXXXXXXX from propertytax.punecorporation.org"
+      "user_message": "Retrieve property tax payment receipt for the municipal corporation assessment number O/4/42/XXXXXXXX from municipal-tax-portal.example"
     },
     "finalText": "goal not met: Actual tax payment receipt for assessment number O/4/42/XXXXXXXX - only homepage content shown, not the requested receipt",
     "toolCalls": [
       {
         "name": "http.fetch",
         "input": {
-          "host": "propertytax.punecorporation.org",
+          "host": "municipal-tax-portal.example",
           "step": 0
         }
       },
@@ -21,7 +21,7 @@
       {
         "name": "http.fetch",
         "input": {
-          "host": "propertytax.punecorporation.org",
+          "host": "municipal-tax-portal.example",
           "step": 1
         }
       },
@@ -40,7 +40,7 @@
       {
         "name": "http.fetch",
         "input": {
-          "host": "propertytax.punecorporation.org",
+          "host": "municipal-tax-portal.example",
           "step": 2
         }
       },
@@ -53,7 +53,7 @@
       {
         "name": "http.fetch",
         "input": {
-          "host": "propertytax.punecorporation.org",
+          "host": "municipal-tax-portal.example",
           "step": 3
         }
       },
@@ -66,7 +66,7 @@
       {
         "name": "browser.goto",
         "input": {
-          "host": "propertytax.punecorporation.org",
+          "host": "municipal-tax-portal.example",
           "status": 200
         }
       },
@@ -98,7 +98,7 @@
     ],
     "citations": [
       {
-        "source": "propertytax.punecorporation.org",
+        "source": "municipal-tax-portal.example",
         "ref": "portal",
         "quote": "verified source"
       }
@@ -114,14 +114,14 @@
   },
   {
     "input": {
-      "user_message": "Retrieve property tax payment receipt for Pune Municipal Corporation assessment number O/4/42/XXXXXXXX from propertytax.punecorporation.org"
+      "user_message": "Retrieve property tax payment receipt for the municipal corporation assessment number O/4/42/XXXXXXXX from municipal-tax-portal.example"
     },
     "finalText": "goal not met: nothing I tried changed the screen \u2014 the page stopped responding to actions",
     "toolCalls": [
       {
         "name": "http.fetch",
         "input": {
-          "host": "propertytax.punecorporation.org",
+          "host": "municipal-tax-portal.example",
           "step": 0
         }
       },
@@ -134,7 +134,7 @@
       {
         "name": "http.fetch",
         "input": {
-          "host": "propertytax.punecorporation.org",
+          "host": "municipal-tax-portal.example",
           "step": 1
         }
       },
@@ -147,7 +147,7 @@
       {
         "name": "http.fetch",
         "input": {
-          "host": "propertytax.punecorporation.org",
+          "host": "municipal-tax-portal.example",
           "step": 2
         }
       },
@@ -160,7 +160,7 @@
       {
         "name": "http.fetch",
         "input": {
-          "host": "propertytax.punecorporation.org",
+          "host": "municipal-tax-portal.example",
           "step": 3
         }
       },
@@ -179,7 +179,7 @@
       {
         "name": "browser.goto",
         "input": {
-          "host": "propertytax.punecorporation.org",
+          "host": "municipal-tax-portal.example",
           "status": 200
         }
       },
@@ -219,7 +219,7 @@
     ],
     "citations": [
       {
-        "source": "propertytax.punecorporation.org",
+        "source": "municipal-tax-portal.example",
         "ref": "portal",
         "quote": "verified source"
       }
@@ -251,14 +251,14 @@
   },
   {
     "input": {
-      "user_message": "Download property tax payment receipt PDF for Pune Municipal Corporation assessment number O/4/42/XXXXXXXX challan XXXX-XXXX-XXXX from propertytax.punecorporation.org"
+      "user_message": "Download property tax payment receipt PDF for the municipal corporation assessment number O/4/42/XXXXXXXX challan XXXX-XXXX-XXXX from municipal-tax-portal.example"
     },
     "finalText": "Receipt details retrieved and verified on the portal for the requested assessment (challan and receipt_details extracted).",
     "toolCalls": [
       {
         "name": "http.fetch",
         "input": {
-          "host": "propertytax.punecorporation.org",
+          "host": "municipal-tax-portal.example",
           "step": 0
         }
       },
@@ -271,7 +271,7 @@
       {
         "name": "browser.goto",
         "input": {
-          "host": "propertytax.punecorporation.org",
+          "host": "municipal-tax-portal.example",
           "status": 200
         }
       },
@@ -288,7 +288,7 @@
     ],
     "citations": [
       {
-        "source": "propertytax.punecorporation.org",
+        "source": "municipal-tax-portal.example",
         "ref": "portal",
         "quote": "verified source"
       }
@@ -307,14 +307,14 @@
   },
   {
     "input": {
-      "user_message": "Download property tax payment receipt PDF for Pune Municipal Corporation assessment number O/4/42/XXXXXXXX from propertytax.punecorporation.org"
+      "user_message": "Download property tax payment receipt PDF for the municipal corporation assessment number O/4/42/XXXXXXXX from municipal-tax-portal.example"
     },
     "finalText": "goal not met: nothing I tried changed the screen \u2014 the page stopped responding to actions",
     "toolCalls": [
       {
         "name": "http.fetch",
         "input": {
-          "host": "propertytax.punecorporation.org",
+          "host": "municipal-tax-portal.example",
           "step": 0
         }
       },
@@ -327,7 +327,7 @@
       {
         "name": "browser.goto",
         "input": {
-          "host": "propertytax.punecorporation.org",
+          "host": "municipal-tax-portal.example",
           "status": 200
         }
       },
@@ -355,7 +355,7 @@
     ],
     "citations": [
       {
-        "source": "propertytax.punecorporation.org",
+        "source": "municipal-tax-portal.example",
         "ref": "portal",
         "quote": "verified source"
       }

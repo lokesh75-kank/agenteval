@@ -35,7 +35,7 @@ npx tsx case-studies/aaro-property-tax/evaluate.ts
 ## The finding
 
 ```
-[FAIL] pune-property-tax-receipt  (determinism 25%, 1/4 runs)
+[FAIL] property-tax-receipt  (determinism 25%, 1/4 runs)
 [FAIL] Summary: 0/1 scenarios passed | overall determinism 25.0%
 ```
 
