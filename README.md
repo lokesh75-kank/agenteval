@@ -145,6 +145,12 @@ npx agenteval-mcp   # or run dist/mcp/server.js
 
 See [AGENTS.md](./AGENTS.md) for the canonical integration pattern (written for AI coding agents).
 
+## Case study
+
+[**A real autonomous web agent at 25% determinism**](./case-studies/aaro-property-tax/) - AgentEval
+evaluating four real recorded runs of an autonomous browser agent on the same task; it succeeded only
+1 of 4 times. A concrete example of determinism scoring catching flakiness a single check would miss.
+
 ## Benchmark
 
 `bench/regulated/` ships a starter benchmark of regulated-QMS scenarios authored from **public-domain** US regulatory text (eCFR / FDA). See [bench/regulated/README.md](./bench/regulated/README.md).

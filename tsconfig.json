@@ -20,6 +20,6 @@
       "agenteval-core": ["./src/index.ts"]
     }
   },
-  "include": ["src", "test", "examples", "bench"],
+  "include": ["src", "test", "examples", "bench", "case-studies"],
   "exclude": ["node_modules", "dist"]
 }
