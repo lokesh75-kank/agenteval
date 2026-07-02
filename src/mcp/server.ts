@@ -12,14 +12,13 @@
 //   - get_report      : given a SuiteReport, render console / json / html (audit-ready report)
 //
 // Uses the low-level MCP Server API so we need no extra schema dependency.
-// The @modelcontextprotocol/sdk is an OPTIONAL peer dependency.
+// The @modelcontextprotocol/sdk is an OPTIONAL peer dependency: it is imported
+// lazily (see loadSdk) so this module loads cleanly even when the SDK is absent,
+// and only errors when the server is actually created or started.
 
-import { Server } from '@modelcontextprotocol/sdk/server/index.js';
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import {
-  CallToolRequestSchema,
-  ListToolsRequestSchema,
-} from '@modelcontextprotocol/sdk/types.js';
+// Type-only imports are erased at compile time, so they do not pull the SDK in
+// at module load; the runtime values come from the dynamic import in loadSdk.
+import type { Server } from '@modelcontextprotocol/sdk/server/index.js';
 
 import type { AgentTrace } from '../core/trace.js';
 import type { Assertion, SuiteReport } from '../core/types.js';
@@ -86,6 +85,34 @@ const TOOLS = [
   },
 ];
 
+/**
+ * Lazily import the optional @modelcontextprotocol/sdk. Kept out of the module's
+ * top-level imports so `import 'agenteval-core/mcp'` succeeds even when the SDK
+ * peer dep is not installed; a missing SDK surfaces here with a clear message
+ * only when someone actually creates or starts the server.
+ */
+async function loadSdk() {
+  try {
+    const [serverMod, stdioMod, typesMod] = await Promise.all([
+      import('@modelcontextprotocol/sdk/server/index.js'),
+      import('@modelcontextprotocol/sdk/server/stdio.js'),
+      import('@modelcontextprotocol/sdk/types.js'),
+    ]);
+    return {
+      Server: serverMod.Server,
+      StdioServerTransport: stdioMod.StdioServerTransport,
+      CallToolRequestSchema: typesMod.CallToolRequestSchema,
+      ListToolsRequestSchema: typesMod.ListToolsRequestSchema,
+    };
+  } catch (err) {
+    throw new Error(
+      'The AgentEval MCP server requires the optional peer dependency ' +
+        '"@modelcontextprotocol/sdk". Install it with `npm install @modelcontextprotocol/sdk`. ' +
+        `(underlying error: ${err instanceof Error ? err.message : String(err)})`,
+    );
+  }
+}
+
 function presetFor(name: unknown) {
   return name === 'regulated' ? REGULATED_PRESET : GENERIC_PRESET;
 }
@@ -95,7 +122,9 @@ function textResult(text: string) {
 }
 
 /** Create (but do not start) the AgentEval MCP server. */
-export function createServer(): Server {
+export async function createServer(): Promise<Server> {
+  const { Server, CallToolRequestSchema, ListToolsRequestSchema } = await loadSdk();
+
   const server = new Server(
     { name: 'agenteval', version: '0.1.0' },
     { capabilities: { tools: {} } },
@@ -147,7 +176,8 @@ export function createServer(): Server {
 
 /** Start the server over stdio. Entry point when run as a binary. */
 export async function main(): Promise<void> {
-  const server = createServer();
+  const { StdioServerTransport } = await loadSdk();
+  const server = await createServer();
   const transport = new StdioServerTransport();
   await server.connect(transport);
 }
