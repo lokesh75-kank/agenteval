@@ -7,8 +7,8 @@ stable). Swap `agent.ts` for your real agent.
 ## Run it
 
 ```bash
-# from the repo root
-pnpm build
+# from the repo root (no build needed - runs straight from source via tsx)
+pnpm install
 pnpm example
 ```
 
@@ -22,5 +22,5 @@ audit report written to `report.html` next to this file.
   answer, a cited answer, and an out-of-scope refusal), runs the suite, prints
   the console scorecard, and writes the HTML audit-ready report.
 
-The same thing via the CLI: `agenteval init` scaffolds an `agenteval.config.mjs`
-and a `scenarios/` folder, then `agenteval run --html report.html`.
+The same thing via the CLI: `agenteval init --demo` scaffolds a working demo
+config (one scenario deliberately flaky), then `agenteval run --html report.html`.

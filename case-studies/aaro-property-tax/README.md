@@ -5,7 +5,7 @@ LLM agent - not a mock.
 
 ## The agent
 
-[Aaro](https://github.com/lokesh75-kank) is an autonomous web operator: given a
+Aaro (a private autonomous-agent project) is an autonomous web operator: given a
 goal, it searches for the right portal, plans a path, drives a real browser, and
 extracts a result. The task here is a genuinely useful, high-stakes errand:
 

@@ -1,6 +1,6 @@
 // Runnable example: evaluate the mock support agent end to end.
 //
-//   pnpm build && pnpm example
+//   pnpm example
 //
 // Shows the full loop: wrap an agent in an adapter, define scenarios, run them
 // N times for a determinism score, print a scorecard, and write an audit report.
