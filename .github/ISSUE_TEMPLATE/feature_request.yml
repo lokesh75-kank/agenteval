@@ -1,0 +1,16 @@
+name: Feature request
+description: Suggest an assertion kind, metric, report improvement, or workflow
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What are you trying to do?
+      description: The evaluation problem you're facing, not the solution - e.g. "I need to assert my agent never quotes prices from stale docs."
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution (optional)
+      description: If you have a shape in mind (new assertion kind, CLI flag, report section), sketch it here.

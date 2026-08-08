@@ -1,0 +1,29 @@
+name: New ingest adapter
+description: Request or offer support for a new trace format (LangGraph, OpenHands, AutoGen, ...)
+labels: [adapter, enhancement]
+body:
+  - type: input
+    id: format
+    attributes:
+      label: Trace format / framework
+      placeholder: "OpenHands trajectory JSON"
+    validations:
+      required: true
+  - type: textarea
+    id: sample
+    attributes:
+      label: Sample trace
+      description: A small (redacted) example of the raw trace format. This is the main thing needed to build an adapter.
+      render: json
+    validations:
+      required: true
+  - type: dropdown
+    id: contribute
+    attributes:
+      label: Would you like to build it?
+      description: Adapters are small pure functions with a documented pattern - see CONTRIBUTING.md. Great first contribution.
+      options:
+        - "Yes, I'd like to contribute it"
+        - "No, just requesting"
+    validations:
+      required: true
