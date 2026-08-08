@@ -63,6 +63,7 @@
     "test:watch": "vitest",
     "lint": "eslint .",
     "example": "tsx examples/basic-agent/run.ts",
+    "example:anthropic": "tsx examples/anthropic-agent/run.ts",
     "prepublishOnly": "pnpm build"
   },
   "dependencies": {

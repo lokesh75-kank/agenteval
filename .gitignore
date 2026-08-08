@@ -6,4 +6,4 @@ coverage/
 *.log
 .env
 .env.local
-examples/basic-agent/report.html
+examples/*/report.html
