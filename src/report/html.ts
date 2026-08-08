@@ -26,6 +26,11 @@ export interface HtmlReportMeta {
   agentName?: string;
   /** Who/what produced the report (tool + version), shown in the footer. */
   generatedBy?: string;
+  /**
+   * Timestamp shown as "Generated". Defaults to the report's own generatedAt;
+   * override for reproducible output (e.g. checked-in sample reports).
+   */
+  generatedAt?: string;
 }
 
 /**
@@ -74,7 +79,7 @@ ${STYLES}
     <h1>${esc(title)}</h1>
     <dl class="meta">
       <div><dt>Agent under test</dt><dd>${esc(agentName)}</dd></div>
-      <div><dt>Generated</dt><dd>${esc(report.generatedAt)}</dd></div>
+      <div><dt>Generated</dt><dd>${esc(meta?.generatedAt ?? report.generatedAt)}</dd></div>
       <div><dt>Verdict</dt><dd><span class="${verdictClass}">${verdictText}</span></dd></div>
     </dl>
   </header>

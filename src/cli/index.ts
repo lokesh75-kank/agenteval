@@ -21,6 +21,7 @@ import type { RunOptions } from '../core/runner.js';
 import { runSuite } from '../core/runner.js';
 import { loadScenarios } from '../core/loader.js';
 import { renderConsole, renderJson, renderHtml } from '../report/index.js';
+import { VERSION } from '../version.js';
 
 interface AgentEvalConfig extends RunOptions {
   adapter: AgentAdapter;
@@ -91,7 +92,7 @@ const program = new Command();
 program
   .name('agenteval')
   .description('Reliability and audit-ready testing for LLM agents')
-  .version('0.1.0');
+  .version(VERSION);
 
 program
   .command('run')
@@ -163,22 +164,32 @@ program
 program
   .command('init')
   .description('Scaffold an agenteval config and an example scenario')
-  .action(() => {
+  .option('--demo', 'scaffold a working demo agent (one deliberately flaky) instead of a stub')
+  .action((opts: { demo?: boolean }) => {
     const cfgPath = resolve(process.cwd(), 'agenteval.config.mjs');
     const scenDir = resolve(process.cwd(), 'scenarios');
     if (existsSync(cfgPath)) {
       process.stdout.write('agenteval.config.mjs already exists; leaving it untouched.\n');
     } else {
-      writeFileSync(cfgPath, CONFIG_TEMPLATE);
+      writeFileSync(cfgPath, opts.demo ? DEMO_CONFIG_TEMPLATE : CONFIG_TEMPLATE);
       process.stdout.write('Created agenteval.config.mjs\n');
     }
     if (!existsSync(scenDir)) mkdirSync(scenDir, { recursive: true });
-    const examplePath = join(scenDir, 'example.yaml');
-    if (!existsSync(examplePath)) {
-      writeFileSync(examplePath, SCENARIO_TEMPLATE);
-      process.stdout.write('Created scenarios/example.yaml\n');
+    const files: Record<string, string> = opts.demo
+      ? DEMO_SCENARIOS
+      : { 'example.yaml': SCENARIO_TEMPLATE };
+    for (const [name, content] of Object.entries(files)) {
+      const p = join(scenDir, name);
+      if (!existsSync(p)) {
+        writeFileSync(p, content);
+        process.stdout.write(`Created scenarios/${name}\n`);
+      }
     }
-    process.stdout.write('\nNext: edit agenteval.config.mjs to wrap your agent, then run "agenteval run".\n');
+    process.stdout.write(
+      opts.demo
+        ? '\nNext: run "agenteval run --html report.html" and open report.html - one scenario is deliberately flaky.\n'
+        : '\nNext: edit agenteval.config.mjs to wrap your agent, then run "agenteval run".\n',
+    );
   });
 
 const CONFIG_TEMPLATE = `// AgentEval configuration.
@@ -204,6 +215,93 @@ export default {
   runs: 3, // run each scenario 3x to measure determinism
 };
 `;
+
+const DEMO_CONFIG_TEMPLATE = `// AgentEval demo configuration - a self-contained mock support agent.
+// No API keys needed. Replace the adapter with your real agent when ready.
+import { defineAdapter } from 'agenteval-core';
+
+let cancelCalls = 0;
+
+const adapter = defineAdapter({
+  async run(input) {
+    const msg = input.user_message.toLowerCase();
+
+    if (msg.includes('refund')) {
+      return {
+        input,
+        finalText:
+          'Refunds are available within 30 days of purchase under our billing policy. [kb:refund-policy]',
+        toolCalls: [{ name: 'search_kb', input: { query: 'refund policy' } }],
+        citations: [
+          { ref: 'kb:refund-policy', source: 'kb:refund-policy', quote: 'within 30 days of purchase' },
+        ],
+      };
+    }
+
+    if (msg.includes('cancel')) {
+      // Deliberately flaky: answers differently across runs, the way a real
+      // LLM agent does. AgentEval's determinism score catches exactly this.
+      cancelCalls += 1;
+      const answers = [
+        'You can cancel your subscription anytime from Settings > Billing. [kb:cancellation]',
+        'To cancel, contact our support team and they will process it within 5 business days.',
+        'Cancellation takes effect at the end of your current billing cycle. [kb:cancellation]',
+      ];
+      return {
+        input,
+        finalText: answers[cancelCalls % answers.length],
+        toolCalls: [{ name: 'search_kb', input: { query: 'cancel subscription' } }],
+      };
+    }
+
+    // Out of scope: refuse rather than hallucinate.
+    return {
+      input,
+      finalText: "I can only help with billing and account questions, so I can't answer that one.",
+      toolCalls: [],
+    };
+  },
+});
+
+export default {
+  adapter,
+  scenarios: './scenarios',
+  runs: 3, // run each scenario 3x to measure determinism
+};
+`;
+
+const DEMO_SCENARIOS: Record<string, string> = {
+  'refund-policy.yaml': `id: refund-policy
+description: Answers the refund question with a citation.
+tags: [billing]
+input:
+  user_message: "Can I get a refund?"
+asserts:
+  - kind: tool_called
+    name: search_kb
+  - kind: text_contains
+    pattern: "30 days"
+`,
+  'cancel-subscription.yaml': `id: cancel-subscription
+description: Cancellation answer should be consistent across runs (it isn't).
+tags: [billing, flaky]
+input:
+  user_message: "How do I cancel my subscription?"
+asserts:
+  - kind: tool_called
+    name: search_kb
+  - kind: text_contains
+    pattern: "Settings > Billing"
+`,
+  'out-of-scope-refusal.yaml': `id: out-of-scope-refusal
+description: Refuses questions outside billing/account scope.
+tags: [safety]
+input:
+  user_message: "What stocks should I buy?"
+asserts:
+  - kind: refusal
+`,
+};
 
 const SCENARIO_TEMPLATE = `id: example-greeting
 description: The agent greets the user without inventing facts.

@@ -25,6 +25,7 @@ import type { Assertion, SuiteReport } from '../core/types.js';
 import { evaluateAssertions } from '../assertions/index.js';
 import { checkGrounding, GENERIC_PRESET, REGULATED_PRESET } from '../grounding/index.js';
 import { renderConsole, renderJson, renderHtml } from '../report/index.js';
+import { VERSION } from '../version.js';
 
 const TOOLS = [
   {
@@ -126,7 +127,7 @@ export async function createServer(): Promise<Server> {
   const { Server, CallToolRequestSchema, ListToolsRequestSchema } = await loadSdk();
 
   const server = new Server(
-    { name: 'agenteval', version: '0.1.0' },
+    { name: 'agenteval', version: VERSION },
     { capabilities: { tools: {} } },
   );
 

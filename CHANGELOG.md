@@ -35,4 +35,4 @@ Initial public release.
 - **MCP server**: `evaluate_agent`, `check_grounding`, `get_report` tools.
 - **Benchmark**: starter regulated scenario set from public-domain US regulatory text (eCFR/FDA).
 
-[0.1.0]: https://github.com/lokesh75-kank/agenteval/releases/tag/v0.1.0
+[0.1.1]: https://github.com/lokesh75-kank/agenteval/releases/tag/v0.1.1
