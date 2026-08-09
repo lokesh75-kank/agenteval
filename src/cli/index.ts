@@ -27,6 +27,8 @@ interface AgentEvalConfig extends RunOptions {
   adapter: AgentAdapter;
   /** Path to scenarios (file/dir/manifest) or inline Scenario[]. */
   scenarios?: string | Scenario[];
+  /** Agent name shown in the report header ("Agent under test"). */
+  agentName?: string;
 }
 
 const DEFAULT_CONFIG_CANDIDATES = [
@@ -103,10 +105,14 @@ program
   .option('--json <file>', 'write JSON report to file')
   .option('--html <file>', 'write audit-ready HTML report to file')
   .action(async (scenarios, opts) => {
-    const { report } = await runReport(opts, scenarios);
+    const { config, report } = await runReport(opts, scenarios);
     process.stdout.write(renderConsole(report) + '\n');
     if (opts.json) writeFileSync(resolve(process.cwd(), opts.json), renderJson(report));
-    if (opts.html) writeFileSync(resolve(process.cwd(), opts.html), renderHtml(report));
+    if (opts.html)
+      writeFileSync(
+        resolve(process.cwd(), opts.html),
+        renderHtml(report, { agentName: config.agentName, generatedBy: `AgentEval v${VERSION}` }),
+      );
     if (report.passingScenarios < report.totalScenarios) process.exitCode = 1;
   });
 
@@ -211,6 +217,7 @@ const adapter = defineAdapter({
 
 export default {
   adapter,
+  agentName: 'My agent', // shown in the report header
   scenarios: './scenarios',
   runs: 3, // run each scenario 3x to measure determinism
 };
@@ -265,6 +272,7 @@ const adapter = defineAdapter({
 
 export default {
   adapter,
+  agentName: 'Demo support agent', // shown in the report header
   scenarios: './scenarios',
   runs: 3, // run each scenario 3x to measure determinism
 };

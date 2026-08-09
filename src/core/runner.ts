@@ -23,7 +23,11 @@ import { judge as runJudge } from '../judge/index.js';
 import type { LLMClient } from '../llm/index.js';
 
 export interface RunOptions {
-  /** How many times to run each scenario (determinism sampling). Default 1. */
+  /**
+   * How many times to run each scenario (determinism sampling). Default 3 - a
+   * determinism tool that samples once contradicts its own premise; pass 1
+   * explicitly for a quick single-shot check.
+   */
   runs?: number;
   /**
    * Fraction of runs that must pass for the scenario to pass overall.
@@ -38,6 +42,22 @@ export interface RunOptions {
 }
 
 const DEFAULT_PASS_THRESHOLD = 2 / 3;
+const DEFAULT_RUNS = 3;
+
+/**
+ * Resolve runs/threshold from options, coercing defensively: a NaN or
+ * non-positive `runs` (e.g. a bad CLI --runs) must not produce NaN loop
+ * bounds, and a threshold is clamped to [0, 1].
+ */
+export function resolveRunConfig(options: RunOptions): { runs: number; passThreshold: number } {
+  const runsRaw = Math.floor(Number(options.runs));
+  const runs = Number.isFinite(runsRaw) && runsRaw >= 1 ? runsRaw : DEFAULT_RUNS;
+  const thRaw = Number(options.passThreshold);
+  const passThreshold = Number.isFinite(thRaw)
+    ? Math.min(1, Math.max(0, thRaw))
+    : DEFAULT_PASS_THRESHOLD;
+  return { runs, passThreshold };
+}
 
 /** Run one scenario N times and summarize, including the determinism score. */
 export async function runScenario(
@@ -45,14 +65,7 @@ export async function runScenario(
   scenario: Scenario,
   options: RunOptions = {},
 ): Promise<ScenarioRunSummary> {
-  // Coerce defensively: a NaN or non-positive `runs` (e.g. a bad CLI --runs)
-  // must not produce NaN loop bounds. A threshold is clamped to [0, 1].
-  const runsRaw = Math.floor(Number(options.runs));
-  const runs = Number.isFinite(runsRaw) && runsRaw >= 1 ? runsRaw : 1;
-  const thRaw = Number(options.passThreshold);
-  const passThreshold = Number.isFinite(thRaw)
-    ? Math.min(1, Math.max(0, thRaw))
-    : DEFAULT_PASS_THRESHOLD;
+  const { runs, passThreshold } = resolveRunConfig(options);
 
   const perRun: ScenarioResult[] = [];
   for (let i = 0; i < runs; i++) {
@@ -138,6 +151,9 @@ export async function runSuite(
     generatedAt: new Date().toISOString(),
     totalScenarios: summaries.length,
     passingScenarios: summaries.filter((s) => s.pass).length,
+    // Record what the suite actually ran with, so the report is auditable
+    // without access to the invocation.
+    config: resolveRunConfig(options),
     scenarios: summaries,
   };
 }

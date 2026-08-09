@@ -15,7 +15,10 @@ import type { AgentTrace, ToolCall, Citation } from '../core/trace.js';
 
 /** Aggregated outcome of running the judge across one or more votes. */
 export interface JudgeResult {
-  /** True when passingVotes / votes >= passThreshold. */
+  /**
+   * Overall verdict. With an explicit passThreshold: passingVotes / votes >=
+   * threshold. Without one: strict majority (an even split fails closed).
+   */
   pass: boolean;
   /** Total number of votes that were cast (== requested votes). */
   votes: number;
@@ -37,7 +40,10 @@ export interface JudgeArgs {
   llm: LLMClient;
   /** How many independent judgements to sample. Default 1. */
   votes?: number;
-  /** Fraction of passing votes required to pass overall. Default 0.5. */
+  /**
+   * Fraction of passing votes required to pass overall (inclusive). Omitted:
+   * strict majority, so ties fail closed.
+   */
   passThreshold?: number;
 }
 
@@ -267,7 +273,13 @@ export async function judge(args: JudgeArgs): Promise<JudgeResult> {
   }
 
   // votes is always >= 1 (normalised above), so no divide-by-zero guard needed.
-  const pass = passingVotes / votes >= passThreshold;
+  // Default (no explicit threshold): STRICT majority, so an even split fails
+  // closed - a judge that can't agree with itself is not a pass. An explicit
+  // passThreshold keeps inclusive (>=) semantics so 1.0 means "unanimous".
+  const pass =
+    args.passThreshold !== undefined
+      ? passingVotes / votes >= passThreshold
+      : passingVotes / votes > passThreshold;
   const score = scores.length > 0
     ? scores.reduce((a, b) => a + b, 0) / scores.length
     : undefined;

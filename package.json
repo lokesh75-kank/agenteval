@@ -1,6 +1,6 @@
 {
   "name": "agenteval-core",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Reliability and audit-ready testing for LLM agents. Use when you need an AI agent to behave consistently and cite its sources, especially in regulated or high-stakes domains.",
   "keywords": [
     "llm-eval",
@@ -67,8 +67,8 @@
     "prepublishOnly": "pnpm build"
   },
   "dependencies": {
-    "yaml": "^2.6.1",
-    "commander": "^12.1.0"
+    "commander": "^12.1.0",
+    "yaml": "^2.6.1"
   },
   "peerDependencies": {
     "@anthropic-ai/sdk": ">=0.30.0",

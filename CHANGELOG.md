@@ -4,6 +4,24 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/), and the project aims to follow
 [Semantic Versioning](https://semver.org/).
 
+## [0.2.0] - 2026-08-08
+
+### Added
+- **Test configuration section in the HTML report**: runs per scenario, scenario
+  pass threshold, LLM-judge usage, and generator version are now recorded in the
+  report itself, so a reviewer can audit what was tested without access to the
+  invocation. `SuiteReport` gains an optional `config` field (recorded by
+  `runSuite`); reports without it (e.g. hand-built) render unchanged.
+
+### Changed
+- **Determinism-first default**: `runs` now defaults to 3 (was 1), matching the
+  scaffolded configs and the 2-of-3 default pass threshold. Pass `runs: 1`
+  explicitly for a single-shot check.
+- **Judge ties fail closed**: without an explicit `passThreshold`, the
+  LLM-judge now requires a strict majority of votes - an even split fails.
+  An explicit `passThreshold` keeps inclusive (`>=`) semantics, so `1.0`
+  still means "unanimous".
+
 ## [0.1.1] - 2026-06-21
 
 ### Added

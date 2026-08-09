@@ -40,7 +40,11 @@ export type Assertion =
 export interface JudgeSpec {
   /** Natural-language rubric the judge grades the response against. */
   rubric: string;
-  /** Fraction of self-consistency votes that must pass (default 0.5). */
+  /**
+   * Fraction of self-consistency votes that must pass. Default: strict
+   * majority (an even split fails closed). An explicit value is inclusive,
+   * e.g. 1.0 = unanimous.
+   */
   passThreshold?: number;
   /** Number of judge votes for self-consistency (default 1). */
   votes?: number;
@@ -94,11 +98,21 @@ export interface ScenarioRunSummary {
   perRun: ScenarioResult[];
 }
 
+/** The resolved evaluation configuration a suite actually ran with. */
+export interface SuiteConfig {
+  /** Runs per scenario (determinism sampling). */
+  runs: number;
+  /** Fraction of runs that must pass for a scenario to pass. */
+  passThreshold: number;
+}
+
 /** Aggregate report across all scenarios in a suite run. */
 export interface SuiteReport {
   generatedAt: string;
   totalScenarios: number;
   passingScenarios: number;
+  /** Resolved config, recorded so a report is auditable without the invocation. */
+  config?: SuiteConfig;
   scenarios: ScenarioRunSummary[];
 }
 
