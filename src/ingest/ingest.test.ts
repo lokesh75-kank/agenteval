@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { otelToTrace, langsmithToTrace } from './index.js';
+import { otelToTrace, langsmithToTrace, langgraphToTrace } from './index.js';
 
 describe('otelToTrace', () => {
   it('maps a nested GenAI span tree (indexed prompt/completion encoding)', () => {
@@ -258,5 +258,117 @@ describe('langsmithToTrace', () => {
   it('degrades to an empty best-effort trace for unknown input', () => {
     expect(langsmithToTrace(null)).toEqual({ input: { user_message: '' }, finalText: '', toolCalls: [] });
     expect(langsmithToTrace('nope')).toEqual({ input: { user_message: '' }, finalText: '', toolCalls: [] });
+  });
+});
+
+describe('langgraphToTrace', () => {
+  it('maps streamed LangGraph node updates with tool calls and tool results', () => {
+    const updates = [
+      {
+        agent: {
+          messages: [
+            { type: 'human', content: 'Can order 42 be refunded?' },
+            {
+              type: 'ai',
+              content: '',
+              tool_calls: [{ id: 'call_1', name: 'lookup_order', args: { orderId: 42 } }],
+              usage_metadata: { input_tokens: 12, output_tokens: 5 },
+            },
+          ],
+        },
+      },
+      {
+        tools: {
+          messages: [
+            {
+              type: 'tool',
+              tool_call_id: 'call_1',
+              name: 'lookup_order',
+              content: '{"status":"shipped"}',
+            },
+          ],
+        },
+      },
+      {
+        agent: {
+          messages: [
+            {
+              type: 'ai',
+              content: 'Order 42 has shipped, so use the standard return flow.',
+              usage_metadata: { input_tokens: 20, output_tokens: 9 },
+            },
+          ],
+        },
+      },
+    ];
+
+    const trace = langgraphToTrace(updates);
+
+    expect(trace.input.user_message).toBe('Can order 42 be refunded?');
+    expect(trace.finalText).toBe('Order 42 has shipped, so use the standard return flow.');
+    expect(trace.iterations).toBe(2);
+    expect(trace.tokens).toEqual({ input: 32, output: 14 });
+    expect(trace.toolCalls).toEqual([
+      {
+        name: 'lookup_order',
+        input: { orderId: 42 },
+        output: { status: 'shipped' },
+      },
+    ]);
+  });
+
+  it('deduplicates checkpoint history messages', () => {
+    const first = [
+      { role: 'user', content: 'Find the account balance.' },
+      {
+        role: 'assistant',
+        content: '',
+        tool_calls: [{ id: 'call_balance', type: 'function', function: { name: 'balance', arguments: '{"account":"A"}' } }],
+      },
+    ];
+    const second = [
+      ...first,
+      { role: 'tool', tool_call_id: 'call_balance', name: 'balance', content: '128.50' },
+      { role: 'assistant', content: 'The account balance is 128.50.' },
+    ];
+
+    const trace = langgraphToTrace({
+      checkpoints: [{ values: { messages: first } }, { values: { messages: second } }],
+    });
+
+    expect(trace.input.user_message).toBe('Find the account balance.');
+    expect(trace.finalText).toBe('The account balance is 128.50.');
+    expect(trace.toolCalls).toEqual([
+      {
+        name: 'balance',
+        input: { account: 'A' },
+        output: '128.50',
+      },
+    ]);
+  });
+
+  it('falls back to LangChain event streams when messages are absent', () => {
+    const events = [
+      { event: 'on_tool_end', name: 'search', data: { input: { query: 'refund policy' }, output: '30 days' } },
+      { event: 'on_chat_model_end', name: 'agent', data: { output: { content: 'Refunds are available for 30 days.' } } },
+    ];
+
+    const trace = langgraphToTrace(events);
+
+    expect(trace.finalText).toBe('Refunds are available for 30 days.');
+    expect(trace.toolCalls).toEqual([{ name: 'search', input: { query: 'refund policy' }, output: '30 days' }]);
+  });
+
+  it('does not treat raw tool call payloads as tool result messages', () => {
+    const trace = langgraphToTrace([
+      { role: 'assistant', content: '', tool_calls: [{ type: 'tool_call', name: 'lookup', args: { id: 1 } }] },
+    ]);
+
+    expect(trace.toolCalls).toEqual([{ name: 'lookup', input: { id: 1 } }]);
+  });
+
+  it('degrades to an empty best-effort trace for unknown input', () => {
+    expect(langgraphToTrace(null)).toEqual({ input: { user_message: '' }, finalText: '', toolCalls: [] });
+    expect(langgraphToTrace(42)).toEqual({ input: { user_message: '' }, finalText: '', toolCalls: [] });
   });
 });
