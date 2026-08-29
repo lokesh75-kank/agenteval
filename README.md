@@ -160,11 +160,11 @@ const verdict = await judge({
 Already collecting traces? Evaluate them without changing your agent:
 
 ```ts
-import { otelToTrace, langsmithToTrace } from 'agenteval-core';
-const trace = langsmithToTrace(myLangSmithRun);
+import { langgraphToTrace, langsmithToTrace, otelToTrace } from 'agenteval-core';
+const trace = langgraphToTrace(myLangGraphRun);
 ```
 
-Adapters exist for **OpenTelemetry GenAI** spans and **LangSmith** runs. Want another format (LangGraph, OpenHands, AutoGen, ...)? Adapters are small, pure functions - see [CONTRIBUTING.md](./CONTRIBUTING.md#adding-an-ingest-adapter), contributions welcome.
+Adapters exist for **OpenTelemetry GenAI** spans, **LangSmith** runs, and **LangGraph** streamed updates or checkpoint histories. Want another format (OpenHands, AutoGen, ...)? Adapters are small, pure functions - see [CONTRIBUTING.md](./CONTRIBUTING.md#adding-an-ingest-adapter), contributions welcome.
 
 ## MCP server
 
@@ -193,7 +193,7 @@ Near-term direction, tracked in issues:
 - [Expand the regulated scenario set into a real benchmark](https://github.com/lokesh75-kank/agenteval/issues/2)
 - [More LLM-judge providers + an offline/heuristic judge](https://github.com/lokesh75-kank/agenteval/issues/4)
 - [Improve grounding precision](https://github.com/lokesh75-kank/agenteval/issues/5)
-- More ingest adapters (LangGraph, OpenHands, AutoGen) - [good first issues](https://github.com/lokesh75-kank/agenteval/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
+- More ingest adapters (OpenHands, AutoGen) - [good first issues](https://github.com/lokesh75-kank/agenteval/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
 
 ## License
 

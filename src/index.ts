@@ -71,4 +71,4 @@ export { judge, type JudgeResult, type JudgeArgs } from './judge/index.js';
 export { renderConsole, renderJson, renderHtml, type HtmlReportMeta } from './report/index.js';
 
 // ── Ingest (evaluate traces you already collect) ──
-export { otelToTrace, langsmithToTrace } from './ingest/index.js';
+export { otelToTrace, langsmithToTrace, langgraphToTrace } from './ingest/index.js';

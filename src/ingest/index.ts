@@ -7,3 +7,4 @@
 
 export { otelToTrace } from './otel.js';
 export { langsmithToTrace } from './langsmith.js';
+export { langgraphToTrace } from './langgraph.js';
