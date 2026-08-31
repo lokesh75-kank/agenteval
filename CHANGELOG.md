@@ -4,6 +4,32 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/), and the project aims to follow
 [Semantic Versioning](https://semver.org/).
 
+## [0.3.0] - 2026-08-31
+
+The Python-bridge release: the engine becomes language-agnostic and the
+`agenteval-python` package ships to PyPI (its own versions start at 0.1.0).
+
+### Added
+- **Command adapter**: run any agent, in any language, as a subprocess.
+  `adapter: { command, args }` in the config; the engine writes `AgentInput`
+  JSON to stdin and reads an `AgentTrace` back from stdout. Failures (bad
+  JSON, non-zero exit, spawn error, timeout) become errored runs, not crashes.
+- **Declarative YAML config**: `agenteval.config.yaml` as an alternative to
+  `agenteval.config.mjs` for command-adapter setups; no JS required.
+- **`agenteval eval --traces <file>`**: score pre-recorded traces with no
+  agent run (`--format traces | otel | langsmith`). Each scenario replays as
+  many runs as it has matching traces, so determinism is measured from what
+  was actually collected. A config without an adapter is valid here.
+- **Replay adapter** (`replayAdapter`, `replayRunCount`) exported for doing
+  the same from code.
+- **`agenteval init --demo-python`**: scaffolds a working Python demo agent
+  (round-robin flaky, like the JS demo) plus a YAML config.
+- **Python package** (`python/`, published as `agenteval-python`): the
+  `agenteval` CLI as a passthrough to the pinned npm engine via npx, an
+  `@agenteval.adapter` decorator speaking the subprocess protocol, `Trace` /
+  `ToolCall` / `Citation` dataclasses, and `write_traces()`.
+- CI: `python-bridge` job running the Python demo end to end.
+
 ## [0.2.0] - 2026-08-08
 
 ### Added

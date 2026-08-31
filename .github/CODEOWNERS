@@ -1,0 +1,4 @@
+# Default owners: requested for review on every PR.
+# When a second maintainer joins, pair this with the
+# "require code owner review" branch-protection setting.
+* @lokesh75-kank
