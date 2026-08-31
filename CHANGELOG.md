@@ -4,6 +4,14 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/), and the project aims to follow
 [Semantic Versioning](https://semver.org/).
 
+## [0.3.1] - 2026-08-31
+
+### Changed
+- Cleaned `bin` paths in package.json (npm publish warning).
+- Releases now publish from CI via trusted publishing (OIDC + provenance)
+  for both npm and PyPI; every release gets a GitHub Release. First npm
+  release through the automated pipeline.
+
 ## [0.3.0] - 2026-08-31
 
 The Python-bridge release: the engine becomes language-agnostic and the
