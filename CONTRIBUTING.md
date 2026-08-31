@@ -1,7 +1,25 @@
 # Contributing to AgentEval
 
-Thanks for your interest. AgentEval is early (v0.1) and contributions, issues,
-and feedback are all welcome.
+Thanks for your interest. AgentEval is early and contributions, issues, and
+feedback are all welcome.
+
+## How changes land
+
+`main` is protected: nobody pushes to it directly, maintainers included.
+Every change follows the same path:
+
+1. Fork the repo (maintainers: branch) and make your change on a branch.
+2. Open a pull request against `main`. The PR template guides what to include.
+3. CI must pass: the `build` job (typecheck, lint, vitest, tsup build) and the
+   `python-bridge` job (pytest plus the demo run end to end).
+4. A maintainer reviews and squash-merges. Squash keeps `main` one commit per
+   PR, so write a PR title that works as a commit subject.
+
+Merging to `main` does not publish anything. Releases are cut separately by
+maintainers (see "Releasing" below), typically batching several merged PRs.
+
+The Python package in `python/` (`agenteval-python` on PyPI) is a thin bridge
+to the engine and versions independently of the npm package.
 
 ## Development setup
 
@@ -79,6 +97,26 @@ with a sample trace.
 Open a GitHub issue with a minimal repro (a small `AgentTrace` or scenario that
 shows the problem) and what you expected. Security-sensitive reports: please
 open a private advisory rather than a public issue.
+
+## Releasing (maintainers)
+
+Both registries publish from CI via trusted publishing (OIDC); there are no
+release tokens to manage. A release is:
+
+1. Open a version-bump PR: bump `package.json` (engine) or
+   `python/pyproject.toml` (Python bridge), update `CHANGELOG.md`, merge it.
+2. Tag the merge commit and push the tag:
+   - engine (npm `agenteval-core`): `git tag v<version> && git push origin v<version>`
+   - Python bridge (PyPI `agenteval-python`): `git tag py-v<version> && git push origin py-v<version>`
+3. `.github/workflows/release.yml` verifies the tag matches the manifest
+   version, runs the tests, publishes to the registry, and creates a GitHub
+   Release with generated notes.
+
+Versioning follows [SemVer](https://semver.org/): patch for fixes, minor for
+backward-compatible features, major for breaking changes (pre-1.0, minors may
+still break). Release when `main` has something users should have; not every
+merge needs a release. Tags matching `v*` and `py-v*` are restricted to
+maintainers.
 
 ## License
 

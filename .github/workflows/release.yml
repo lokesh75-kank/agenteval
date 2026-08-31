@@ -1,17 +1,69 @@
 name: Release
 
-# Publishes the Python bridge (PyPI project: agenteval-python) via PyPI
-# Trusted Publishing (OIDC) - no API tokens or secrets stored anywhere.
-# Trigger: push a tag like py-v0.1.0 (Python releases are versioned
-# independently of the npm engine, which is published separately).
+# Publishes both packages via trusted publishing (OIDC) - no stored tokens.
+#
+#   tag v<version>     -> npm  (agenteval-core, the engine)
+#   tag py-v<version>  -> PyPI (agenteval-python, the Python bridge)
+#
+# Flow: version-bump PR (package.json or python/pyproject.toml + CHANGELOG)
+# is merged to main, then a maintainer pushes the matching tag. Each job
+# verifies the tag matches the manifest version, runs tests, publishes, and
+# creates a GitHub Release.
 
 on:
   push:
     tags:
+      - 'v*'
       - 'py-v*'
 
 jobs:
-  build:
+  # ── npm: agenteval-core ──
+  publish-npm:
+    if: ${{ !startsWith(github.ref_name, 'py-v') }}
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      id-token: write # npm trusted publishing (OIDC) + provenance
+      contents: write # GitHub Release
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+          registry-url: https://registry.npmjs.org
+
+      # Trusted publishing requires npm >= 11.5.1
+      - run: npm install -g npm@latest && npm --version
+
+      - name: Check tag matches package.json version
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          PKG_VERSION=$(node -p "require('./package.json').version")
+          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+            echo "Tag $GITHUB_REF_NAME ($TAG_VERSION) != package.json version ($PKG_VERSION)" >&2
+            exit 1
+          fi
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck && pnpm lint && pnpm test
+
+      # prepublishOnly runs pnpm build; OIDC handles auth, no NODE_AUTH_TOKEN
+      - run: npm publish
+
+      - name: Create GitHub Release
+        run: gh release create "$GITHUB_REF_NAME" --title "agenteval-core $GITHUB_REF_NAME" --generate-notes
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+  # ── PyPI: agenteval-python ──
+  build-python:
+    if: ${{ startsWith(github.ref_name, 'py-v') }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -45,12 +97,16 @@ jobs:
           path: dist/
 
   publish-pypi:
-    needs: build
+    if: ${{ startsWith(github.ref_name, 'py-v') }}
+    needs: build-python
     runs-on: ubuntu-latest
     environment: pypi
     permissions:
-      id-token: write # required for PyPI Trusted Publishing (OIDC)
+      id-token: write # PyPI trusted publishing (OIDC)
+      contents: write # GitHub Release
     steps:
+      - uses: actions/checkout@v4
+
       - uses: actions/download-artifact@v4
         with:
           name: python-dist
@@ -59,3 +115,8 @@ jobs:
       - uses: pypa/gh-action-pypi-publish@release/v1
         with:
           packages-dir: dist/
+
+      - name: Create GitHub Release
+        run: gh release create "$GITHUB_REF_NAME" --title "agenteval-python $GITHUB_REF_NAME" --generate-notes
+        env:
+          GH_TOKEN: ${{ github.token }}
