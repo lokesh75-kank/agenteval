@@ -3,6 +3,7 @@
 [![CI](https://github.com/lokesh75-kank/agenteval/actions/workflows/ci.yml/badge.svg)](https://github.com/lokesh75-kank/agenteval/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/npm/v/agenteval-core.svg)](https://www.npmjs.com/package/agenteval-core)
 [![npm downloads](https://img.shields.io/npm/dm/agenteval-core.svg)](https://www.npmjs.com/package/agenteval-core)
+[![PyPI](https://img.shields.io/pypi/v/agenteval-python.svg)](https://pypi.org/project/agenteval-python/)
 [![license](https://img.shields.io/npm/l/agenteval-core.svg)](./LICENSE)
 
 **Reliability and audit-ready testing for LLM agents.** Wrap any agent, run each scenario N times, and get a determinism (flakiness) score, grounding checks, and a self-contained **audit-ready HTML report** your QA or compliance team can attach to records.
@@ -11,7 +12,7 @@ Your agent can pass a demo 10 times and still be flaky in production. In [a real
 
 ![AgentEval audit report: verdict banner, determinism scores, and a flaky scenario caught at 33%](./docs/assets/report-screenshot.png)
 
-> Status: v0.1. AgentEval grew out of the evaluation layer of **Deminn**, a multi-agent system for regulated quality and compliance workflows (CAPA, FDA/ISO), generalized to evaluate any LLM agent.
+> Status: v0.3, on [npm](https://www.npmjs.com/package/agenteval-core) (engine) and [PyPI](https://pypi.org/project/agenteval-python/) (Python bridge). AgentEval grew out of the evaluation layer of **Deminn**, a multi-agent system for regulated quality and compliance workflows (CAPA, FDA/ISO), generalized to evaluate any LLM agent.
 
 ---
 
@@ -55,7 +56,7 @@ LLM provider SDKs (`@anthropic-ai/sdk`, `@google/genai`) and the MCP SDK are **o
 
 ## Quickstart (your own agent)
 
-**1. Wrap your agent in an adapter** (the only integration point - any framework, any language behind an HTTP call):
+**1. Wrap your agent in an adapter** (the only integration point - JS code as below, a subprocess in any language via `{ command, args }`, or Python with the [`agenteval-python`](#python) decorator):
 
 ```ts
 import { defineAdapter } from 'agenteval-core';
@@ -114,6 +115,7 @@ A fully runnable version of this lives in [`examples/basic-agent/`](./examples/b
 ```bash
 npx agenteval init          # scaffold agenteval.config.mjs + an example scenario
 npx agenteval init --demo   # scaffold a working demo agent (no API keys needed)
+npx agenteval init --demo-python   # same demo as a Python agent + YAML config
 npx agenteval run           # run scenarios, print a scorecard
 npx agenteval run --html report.html   # also write the audit report
 npx agenteval baseline      # save a known-good snapshot
@@ -235,6 +237,17 @@ Near-term direction, tracked in issues:
 - [More LLM-judge providers + an offline/heuristic judge](https://github.com/lokesh75-kank/agenteval/issues/4)
 - [Improve grounding precision](https://github.com/lokesh75-kank/agenteval/issues/5)
 - More ingest adapters (LangGraph, OpenHands, AutoGen) - [good first issues](https://github.com/lokesh75-kank/agenteval/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22)
+
+## Contributing
+
+Contributions land via pull request (`main` is protected; CI must pass and a
+maintainer reviews). Start with [CONTRIBUTING.md](./CONTRIBUTING.md) - ingest
+adapters are the best first contribution. Security reports go through
+[private vulnerability reporting](./SECURITY.md), not public issues. All
+participation is covered by the [Code of Conduct](./CODE_OF_CONDUCT.md).
+
+Releases ship from CI via trusted publishing on both registries: see the
+[CHANGELOG](./CHANGELOG.md) and [GitHub Releases](https://github.com/lokesh75-kank/agenteval/releases).
 
 ## License
 
