@@ -7,7 +7,7 @@ This package is the Python bridge to the AgentEval engine ([`agenteval-core` on 
 ## 60-second demo (no API keys)
 
 ```bash
-pip install agenteval
+pip install agenteval-python   # installs the `agenteval` CLI and `import agenteval`
 mkdir demo && cd demo
 agenteval init --demo-python   # scaffolds a mock Python agent — one scenario deliberately flaky
 agenteval run --html report.html

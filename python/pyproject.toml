@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "agenteval"
+name = "agenteval-python"
 version = "0.1.0"
 description = "Reliability and audit-ready testing for LLM agents (Python bridge to the AgentEval engine)."
 readme = "README.md"

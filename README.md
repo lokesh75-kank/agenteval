@@ -48,7 +48,7 @@ If you need battle-tested accuracy metrics and a big integration catalog, DeepEv
 ```bash
 npm install agenteval-core
 # or: pnpm add agenteval-core
-# Python users: pip install agenteval   (see "Python" below)
+# Python users: pip install agenteval-python   (see "Python" below)
 ```
 
 LLM provider SDKs (`@anthropic-ai/sdk`, `@google/genai`) and the MCP SDK are **optional** - install them only if you use the LLM-judge or the MCP server.
@@ -125,7 +125,7 @@ The CLI loads `agenteval.config.mjs` (or a declarative `agenteval.config.yaml` -
 
 ## Python
 
-Your agent doesn't have to be JavaScript. `pip install agenteval` gives Python users the same CLI plus a ~10-line integration - the engine runs the agent as a subprocess (JSON in on stdin, an `AgentTrace` out on stdout):
+Your agent doesn't have to be JavaScript. `pip install agenteval-python` gives Python users the same CLI plus a ~10-line integration - the engine runs the agent as a subprocess (JSON in on stdin, an `AgentTrace` out on stdout):
 
 ```python
 # my_agent.py
@@ -153,7 +153,7 @@ runs: 3
 ```
 
 ```bash
-pip install agenteval          # requires Node.js >= 20 on PATH (the engine)
+pip install agenteval-python   # requires Node.js >= 20 on PATH (the engine)
 agenteval init --demo-python   # working Python demo, no API keys
 agenteval run --html report.html
 ```

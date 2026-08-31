@@ -1,0 +1,61 @@
+name: Release
+
+# Publishes the Python bridge (PyPI project: agenteval-python) via PyPI
+# Trusted Publishing (OIDC) - no API tokens or secrets stored anywhere.
+# Trigger: push a tag like py-v0.1.0 (Python releases are versioned
+# independently of the npm engine, which is published separately).
+
+on:
+  push:
+    tags:
+      - 'py-v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Check tag matches pyproject version
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#py-v}"
+          PKG_VERSION=$(python3 -c "import tomllib; print(tomllib.load(open('python/pyproject.toml','rb'))['project']['version'])")
+          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+            echo "Tag $GITHUB_REF_NAME ($TAG_VERSION) != pyproject.toml version ($PKG_VERSION)" >&2
+            exit 1
+          fi
+
+      - name: Run Python tests
+        run: |
+          pip install -e ./python pytest
+          pytest python/tests -q
+
+      - name: Build sdist and wheel
+        run: |
+          pip install build
+          python -m build python/ --outdir dist/
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: python-dist
+          path: dist/
+
+  publish-pypi:
+    needs: build
+    runs-on: ubuntu-latest
+    environment: pypi
+    permissions:
+      id-token: write # required for PyPI Trusted Publishing (OIDC)
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: python-dist
+          path: dist/
+
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/
