@@ -70,5 +70,9 @@ export { judge, type JudgeResult, type JudgeArgs } from './judge/index.js';
 // ── Reports (console / json / audit-ready HTML report) ──
 export { renderConsole, renderJson, renderHtml, type HtmlReportMeta } from './report/index.js';
 
+// ── Adapters (language-agnostic seams) ──
+export { commandAdapter, isCommandSpec, type CommandAdapterSpec } from './adapters/command.js';
+export { replayAdapter, replayRunCount } from './adapters/replay.js';
+
 // ── Ingest (evaluate traces you already collect) ──
 export { otelToTrace, langsmithToTrace } from './ingest/index.js';

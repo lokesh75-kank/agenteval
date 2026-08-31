@@ -7,3 +7,9 @@ coverage/
 .env
 .env.local
 examples/*/report.html
+
+# Python bridge
+__pycache__/
+*.egg-info/
+python/dist/
+.venv/

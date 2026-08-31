@@ -34,3 +34,49 @@ jobs:
 
       - name: Test
         run: pnpm test
+
+  python-bridge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Build engine
+        run: pnpm build
+
+      - name: Install Python package
+        run: pip install -e ./python pytest
+
+      - name: Python unit tests
+        run: pytest python/tests -q
+
+      - name: End-to-end Python demo through the engine
+        run: |
+          mkdir -p /tmp/agenteval-e2e && cd /tmp/agenteval-e2e
+          node $GITHUB_WORKSPACE/dist/cli/index.js init --demo-python
+          # The demo is deliberately flaky, so run exits 1; assert the report exists
+          # and the flaky scenario was caught instead.
+          node $GITHUB_WORKSPACE/dist/cli/index.js run --html report.html --json report.json || true
+          test -s report.html
+          python3 -c "
+          import json
+          r = json.load(open('/tmp/agenteval-e2e/report.json'))
+          flaky = next(s for s in r['scenarios'] if s['scenarioId'] == 'cancel-subscription')
+          assert flaky['determinism'] < 1.0, 'flaky scenario should not be fully deterministic'
+          steady = next(s for s in r['scenarios'] if s['scenarioId'] == 'refund-policy')
+          assert steady['pass'], 'refund-policy should pass'
+          "

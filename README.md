@@ -39,7 +39,7 @@ Most eval tools score *answer accuracy*. AgentEval is the **reliability and audi
 | Regression gate for CI (`check` vs baseline) | ✅ | ✅ | ✅ | partial |
 | Evaluate existing traces (OpenTelemetry, LangSmith) | ✅ | - | - | native |
 | MCP server (callable by coding agents) | ✅ | - | - | - |
-| Language | TypeScript | Python | Node/CLI | platform |
+| Language | TypeScript + Python bridge | Python | Node/CLI | platform |
 
 If you need battle-tested accuracy metrics and a big integration catalog, DeepEval and promptfoo are excellent - this table is about *fit*, not better/worse. AgentEval is the one to reach for when the question is "will this agent behave the same way tomorrow, and can I show an auditor the evidence?"
 
@@ -48,6 +48,7 @@ If you need battle-tested accuracy metrics and a big integration catalog, DeepEv
 ```bash
 npm install agenteval-core
 # or: pnpm add agenteval-core
+# Python users: pip install agenteval   (see "Python" below)
 ```
 
 LLM provider SDKs (`@anthropic-ai/sdk`, `@google/genai`) and the MCP SDK are **optional** - install them only if you use the LLM-judge or the MCP server.
@@ -117,9 +118,47 @@ npx agenteval run           # run scenarios, print a scorecard
 npx agenteval run --html report.html   # also write the audit report
 npx agenteval baseline      # save a known-good snapshot
 npx agenteval check         # fail (exit 1) if results regressed vs the baseline  <- wire into CI
+npx agenteval eval --traces traces.json ./scenarios   # score pre-recorded traces, no agent run
 ```
 
-The CLI loads `agenteval.config.mjs`, which default-exports your `adapter` and options.
+The CLI loads `agenteval.config.mjs` (or a declarative `agenteval.config.yaml` - see "Python" below), which provides your `adapter` and options. An adapter is either JS code (`{ run }`) or a subprocess in any language (`{ command, args }`).
+
+## Python
+
+Your agent doesn't have to be JavaScript. `pip install agenteval` gives Python users the same CLI plus a ~10-line integration - the engine runs the agent as a subprocess (JSON in on stdin, an `AgentTrace` out on stdout):
+
+```python
+# my_agent.py
+import agenteval
+
+@agenteval.adapter
+def my_agent(input):
+    result = run_my_agent(input["user_message"])  # LangGraph, CrewAI, raw loop, ...
+    return agenteval.Trace(
+        final_text=result.text,
+        tool_calls=[agenteval.ToolCall(name=t.name, input=t.args) for t in result.tools],
+    )
+
+if __name__ == "__main__":
+    my_agent.serve()
+```
+
+```yaml
+# agenteval.config.yaml
+adapter:
+  command: python3
+  args: [my_agent.py]
+scenarios: ./scenarios
+runs: 3
+```
+
+```bash
+pip install agenteval          # requires Node.js >= 20 on PATH (the engine)
+agenteval init --demo-python   # working Python demo, no API keys
+agenteval run --html report.html
+```
+
+Or skip running the agent entirely: dump traces you already collect with `agenteval.write_traces(...)` and score them with `agenteval eval --traces traces.json ./scenarios` (`--format otel | langsmith` for OpenTelemetry / LangSmith exports). See [`python/README.md`](./python/README.md).
 
 ## Assertions
 
@@ -163,6 +202,8 @@ Already collecting traces? Evaluate them without changing your agent:
 import { otelToTrace, langsmithToTrace } from 'agenteval-core';
 const trace = langsmithToTrace(myLangSmithRun);
 ```
+
+Or from the CLI, with no code at all: `agenteval eval --traces traces.json ./scenarios --format otel` scores a JSON file of recorded runs against your scenarios (each scenario replays as many runs as it has matching traces, so determinism is measured from what you actually collected).
 
 Adapters exist for **OpenTelemetry GenAI** spans and **LangSmith** runs. Want another format (LangGraph, OpenHands, AutoGen, ...)? Adapters are small, pure functions - see [CONTRIBUTING.md](./CONTRIBUTING.md#adding-an-ingest-adapter), contributions welcome.
 
