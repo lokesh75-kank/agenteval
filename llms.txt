@@ -47,6 +47,7 @@ tool_called, tool_not_called, tool_input_contains_one_of, text_contains, text_co
 - Entry: dist/mcp/server.js (createServer(), main()).
 
 ## Docs
+- Documentation site: https://lokesh75-kank.github.io/agenteval/ (getting started, concepts, assertion reference, config/CLI reference).
 - README.md - human quickstart and full feature tour.
 - AGENTS.md - canonical integration patterns for AI coding agents (JS, Python, subprocess, traces).
 - python/README.md - Python bridge (PyPI: agenteval-python).

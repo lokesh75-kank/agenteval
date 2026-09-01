@@ -5,6 +5,9 @@
 [![npm downloads](https://img.shields.io/npm/dm/agenteval-core.svg)](https://www.npmjs.com/package/agenteval-core)
 [![PyPI](https://img.shields.io/pypi/v/agenteval-python.svg)](https://pypi.org/project/agenteval-python/)
 [![PyPI downloads](https://static.pepy.tech/badge/agenteval-python)](https://pepy.tech/project/agenteval-python)
+[![docs](https://img.shields.io/badge/docs-lokesh75--kank.github.io%2Fagenteval-blue)](https://lokesh75-kank.github.io/agenteval/)
+
+**Documentation: [lokesh75-kank.github.io/agenteval](https://lokesh75-kank.github.io/agenteval/)** - getting started, concepts, assertion and config references.
 [![license](https://img.shields.io/npm/l/agenteval-core.svg)](./LICENSE)
 
 **Reliability and audit-ready testing for LLM agents.** Wrap any agent, run each scenario N times, and get a determinism (flakiness) score, grounding checks, and a self-contained **audit-ready HTML report** your QA or compliance team can attach to records.

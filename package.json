@@ -64,7 +64,10 @@
     "lint": "eslint .",
     "example": "tsx examples/basic-agent/run.ts",
     "example:anthropic": "tsx examples/anthropic-agent/run.ts",
-    "prepublishOnly": "pnpm build"
+    "prepublishOnly": "pnpm build",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "dependencies": {
     "commander": "^12.1.0",
@@ -96,6 +99,7 @@
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.18.0",
+    "vitepress": "^1.6.4",
     "vitest": "^2.1.8"
   }
 }
