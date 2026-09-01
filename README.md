@@ -224,6 +224,7 @@ See [AGENTS.md](./AGENTS.md) for the canonical integration pattern (written for 
 [**A real autonomous web agent at 25% determinism**](./case-studies/aaro-property-tax/) - AgentEval
 evaluating four real recorded runs of an autonomous browser agent on the same task; it succeeded only
 1 of 4 times, with three distinct failure modes. Reproducible: `npx tsx case-studies/aaro-property-tax/evaluate.ts`.
+Full writeup: [Your agent passed the demo. Would it pass it again?](./docs/case-studies/25-percent-determinism.md)
 
 ## Benchmark
 
