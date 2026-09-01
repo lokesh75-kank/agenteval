@@ -1,6 +1,6 @@
 # AgentEval
 
-> Reliability and audit-ready testing for LLM agents. Wrap any agent, assert its behavior, run N times to measure determinism (flakiness), check that claims are grounded in citations, and emit an audit-ready reliability report. Built for regulated and high-stakes domains (health, fintech, legal, compliance). TypeScript, ESM, Node >= 20. MIT.
+> Reliability and audit-ready testing for LLM agents. Wrap any agent, assert its behavior, run N times to measure determinism (flakiness), check that claims are grounded in citations, and emit an audit-ready reliability report. Built for regulated and high-stakes domains (health, fintech, legal, compliance). Engine: TypeScript, ESM, Node >= 20 (npm: agenteval-core). Python bridge on PyPI: agenteval-python (same CLI; agents in any language run as subprocesses). MIT.
 
 ## What it is
 - Like unit tests + a crash-test rating for AI agents.
@@ -8,7 +8,8 @@
 - Differentiators vs other eval tools: determinism/flakiness scoring across N runs, grounding/auditability, and an audit-ready report (HTML). Plugs into existing traces (OpenTelemetry, LangSmith) and ships an MCP server.
 
 ## Install
-- `npm install agenteval-core`
+- Node/TS: `npm install agenteval-core`
+- Python: `pip install agenteval-python` (needs Node >= 20 on PATH; CLI is a passthrough to the pinned engine, plus an @agenteval.adapter decorator and Trace dataclasses; `import agenteval`)
 - Optional peers: `@anthropic-ai/sdk`, `@google/genai` (LLM-judge), `@modelcontextprotocol/sdk` (MCP server).
 
 ## Core concepts
@@ -31,9 +32,15 @@
 tool_called, tool_not_called, tool_input_contains_one_of, text_contains, text_contains_one_of, text_does_not_contain, output_contains_one_of, iteration_count_under, iteration_count_at_least, recall_at_k, every_claim_has_citation, citations_resolve, quote_matches_source, refusal
 
 ## CLI
-- agenteval init | run [scenarios] | baseline [scenarios] | check [scenarios]
-- Flags: --config <file>, --runs <n>, --json <file>, --html <file>, --baseline <file>, --tolerance <n>
-- Config: agenteval.config.mjs default-exports { adapter, scenarios?, runs?, passThreshold?, llm?, assertion? }
+- agenteval init [--demo | --demo-python] | run [scenarios] | baseline [scenarios] | check [scenarios] | eval [scenarios] --traces <file>
+- Flags: --config <file>, --runs <n>, --json <file>, --html <file>, --baseline <file>, --tolerance <n>; eval also takes --traces <file> (required) and --format traces|otel|langsmith
+- Config: agenteval.config.mjs default-exports { adapter, scenarios?, runs?, passThreshold?, llm?, assertion? }. Declarative alternative: agenteval.config.yaml with adapter: { command, args? } (subprocess agent, any language).
+- eval scores pre-recorded traces with no agent run; each scenario replays as many runs as it has traces with a matching input.user_message. A config without an adapter is valid for eval.
+
+## Language-agnostic adapters
+- commandAdapter({command, args?, cwd?, env?, timeoutMs?}): spawns the agent per run; AgentInput JSON on stdin, AgentTrace JSON on stdout; failures become errored runs.
+- replayAdapter(traces), replayRunCount(traces, userMessage): evaluate recorded traces from code.
+- Python: @agenteval.adapter decorator wraps (input: dict) -> Trace|dict and serves the stdin/stdout protocol via my_agent.serve(); agenteval.write_traces(traces, path) feeds eval --traces.
 
 ## MCP server
 - Tools: evaluate_agent {trace, asserts, preset?}, check_grounding {text|trace, preset?, knownSources?}, get_report {report, format?}
@@ -41,5 +48,7 @@ tool_called, tool_not_called, tool_input_contains_one_of, text_contains, text_co
 
 ## Docs
 - README.md - human quickstart and full feature tour.
-- AGENTS.md - canonical integration pattern for AI coding agents.
+- AGENTS.md - canonical integration patterns for AI coding agents (JS, Python, subprocess, traces).
+- python/README.md - Python bridge (PyPI: agenteval-python).
+- docs/case-studies/25-percent-determinism.md - writeup: a real web agent at 25% determinism (1/4 runs on the identical task).
 - bench/regulated/ - starter benchmark from public-domain US regulatory text (eCFR/FDA).

@@ -58,6 +58,8 @@ h2 { font-size: 18px; margin: 36px 0 14px; padding-bottom: 6px; border-bottom: 1
 table { width: 100%; border-collapse: collapse; font-size: 14px; }
 thead th { text-align: left; font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); border-bottom: 2px solid var(--line); padding: 8px 10px; }
 tbody td { border-bottom: 1px solid var(--line); padding: 12px 10px; vertical-align: top; }
+.provenance tbody th { text-align: left; font-weight: 600; border-bottom: 1px solid var(--line); padding: 8px 10px; width: 40%; color: var(--muted); }
+.provenance tbody td { padding: 8px 10px; }
 .scn code { font-size: 13px; background: var(--bg); padding: 2px 6px; border-radius: 4px; }
 .sub { color: var(--muted); font-size: 12px; }
 .pill { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; padding: 2px 8px; border-radius: 999px; }
@@ -82,7 +84,7 @@ tbody td { border-bottom: 1px solid var(--line); padding: 12px 10px; vertical-al
     <h1>Aaro Property-Tax Agent - Reliability Report</h1>
     <dl class="meta">
       <div><dt>Agent under test</dt><dd>Aaro (autonomous web operator)</dd></div>
-      <div><dt>Generated</dt><dd>2026-06-21T06:34:48.311Z</dd></div>
+      <div><dt>Generated</dt><dd>2026-09-01T04:00:44.931Z</dd></div>
       <div><dt>Verdict</dt><dd><span class="verdict-warn">ATTENTION REQUIRED</span></dd></div>
     </dl>
   </header>
@@ -122,6 +124,18 @@ tbody td { border-bottom: 1px solid var(--line); padding: 12px 10px; vertical-al
           <td><ul class="alist"><li><span class="bad">FAIL</span> output_contains_one_of: [receipt details, challan, receipt_details]<div class="detail">expected final text or any tool input to contain one of: receipt details, challan, receipt_details</div></li><li><span class="bad">FAIL</span> text_does_not_contain: [stopped responding, No Dues, goal not met]<div class="detail">final text contained forbidden pattern(s): goal not met</div></li></ul></td>
           <td><span class="sub">n/a</span></td>
         </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="provenance">
+    <h2>Test configuration</h2>
+    <table>
+      <tbody>
+        <tr><th scope="row">Runs per scenario</th><td>4</td></tr>
+        <tr><th scope="row">Scenario pass threshold</th><td>50% of runs</td></tr>
+        <tr><th scope="row">Scenarios using LLM-judge</th><td>none</td></tr>
+        <tr><th scope="row">Report generator</th><td>AgentEval</td></tr>
       </tbody>
     </table>
   </section>

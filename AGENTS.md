@@ -6,6 +6,12 @@ If you are an AI coding agent integrating AgentEval into a user's project, follo
 
 Evaluates the reliability of an LLM agent: wrap the user's agent, run scenarios (assertions about its behavior) N times, and report pass/fail + a determinism score + grounding/citation health. Output includes an audit-ready HTML report.
 
+## Choose the integration path
+
+- **User's agent is JS/TS:** follow "Canonical integration" below.
+- **User's agent is Python:** `pip install agenteval-python` (needs Node >= 20 on PATH), wrap the agent with the `@agenteval.adapter` decorator, and use a declarative `agenteval.config.yaml` - see "Python integration" below. Do NOT write JavaScript for a Python project.
+- **User's agent is another language, or you only have recorded traces:** use the subprocess adapter (`adapter: { command, args }` in YAML config; AgentInput JSON on stdin -> AgentTrace JSON on stdout), or score traces directly with `agenteval eval --traces <file> ./scenarios` (`--format traces|otel|langsmith`).
+
 ## Canonical integration (do this)
 
 1. **Install:** `npm install agenteval-core`
@@ -43,6 +49,41 @@ asserts:
 ```
 
 4. **Run:** `npx agenteval run` (scorecard), `npx agenteval run --html report.html` (audit report), `npx agenteval check` (CI gate vs a saved baseline).
+
+## Python integration (agenteval-python)
+
+1. **Install:** `pip install agenteval-python` (the CLI shells out to the pinned npm engine via npx; Node >= 20 required).
+2. **Wrap the agent** in `my_agent.py`:
+
+```python
+import agenteval
+
+@agenteval.adapter
+def my_agent(input):
+    result = call_the_users_agent(input["user_message"])
+    return agenteval.Trace(
+        final_text=result.text,
+        tool_calls=[agenteval.ToolCall(name=t.name, input=t.args) for t in result.tools],
+        citations=[agenteval.Citation(source=c.source, quote=c.quote) for c in result.citations],  # optional
+    )
+
+if __name__ == "__main__":
+    my_agent.serve()
+```
+
+3. **Create `agenteval.config.yaml`** (no JS needed):
+
+```yaml
+adapter:
+  command: python3
+  args: [my_agent.py]
+scenarios: ./scenarios
+runs: 3
+```
+
+4. **Run:** `agenteval run --html report.html`. Scenarios are the same YAML as below. A working demo: `agenteval init --demo-python`.
+
+To score traces the user already collects: `agenteval.write_traces(traces, "traces.json")` then `agenteval eval --traces traces.json ./scenarios`.
 
 ## The AgentTrace shape (the contract)
 
