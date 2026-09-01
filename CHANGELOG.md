@@ -4,6 +4,17 @@ All notable changes to this project are documented here. The format follows
 [Keep a Changelog](https://keepachangelog.com/), and the project aims to follow
 [Semantic Versioning](https://semver.org/).
 
+## [0.3.2] - 2026-08-31
+
+### Changed
+- Refreshed the agent-facing docs shipped in the package: `llms.txt` and
+  `AGENTS.md` now cover the Python bridge (`agenteval-python`), the subprocess
+  command adapter, YAML config, and `eval --traces`, with an integration-path
+  chooser for AI coding assistants.
+- README: current status/badges, subprocess and Python adapter paths,
+  contributing section, and a link to the new case-study writeup
+  (`docs/case-studies/25-percent-determinism.md`).
+
 ## [0.3.1] - 2026-08-31
 
 ### Changed
@@ -87,6 +98,7 @@ Initial public release.
 - **MCP server**: `evaluate_agent`, `check_grounding`, `get_report` tools.
 - **Benchmark**: starter regulated scenario set from public-domain US regulatory text (eCFR/FDA).
 
+[0.3.2]: https://github.com/lokesh75-kank/agenteval/releases/tag/v0.3.2
 [0.3.1]: https://github.com/lokesh75-kank/agenteval/releases/tag/v0.3.1
 [0.3.0]: https://github.com/lokesh75-kank/agenteval/compare/v0.1.1...v0.3.1
 [0.2.0]: https://github.com/lokesh75-kank/agenteval/compare/v0.1.1...v0.3.1
