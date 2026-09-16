@@ -70,7 +70,7 @@ The Python-bridge release: the engine becomes language-agnostic and the
 ## [0.1.1] - 2026-06-21
 
 ### Added
-- `case-studies/aaro-property-tax/` - real-agent validation: four recorded runs
+- `case-studies/web-agent-property-tax/` - real-agent validation: four recorded runs
   of an autonomous web agent on the same task scored at 25% determinism (1/4).
 - `CHANGELOG.md` and `CONTRIBUTING.md`.
 

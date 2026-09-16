@@ -5,7 +5,7 @@ LLM agent - not a mock.
 
 ## The agent
 
-Aaro (a private autonomous-agent project) is an autonomous web operator: given a
+The agent under test (a private autonomous-agent project) is an autonomous web operator: given a
 goal, it searches for the right portal, plans a path, drives a real browser, and
 extracts a result. The task here is a genuinely useful, high-stakes errand:
 
@@ -29,7 +29,7 @@ Run it yourself:
 
 ```bash
 pnpm build
-npx tsx case-studies/aaro-property-tax/evaluate.ts
+npx tsx case-studies/web-agent-property-tax/evaluate.ts
 ```
 
 ## The finding

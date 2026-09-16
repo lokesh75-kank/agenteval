@@ -1,6 +1,6 @@
 // The replay adapter: evaluate traces you already collected instead of
 // re-running the agent. Formalizes the pattern from
-// case-studies/aaro-property-tax/evaluate.ts as a first-class adapter, and
+// case-studies/web-agent-property-tax/evaluate.ts as a first-class adapter, and
 // powers `agenteval eval --traces`.
 //
 // Matching: a scenario's runs replay the recorded traces whose

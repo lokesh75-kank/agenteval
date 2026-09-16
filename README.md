@@ -12,7 +12,7 @@
 
 **Reliability and audit-ready testing for LLM agents.** Wrap any agent, run each scenario N times, and get a determinism (flakiness) score, grounding checks, and a self-contained **audit-ready HTML report** your QA or compliance team can attach to records.
 
-Your agent can pass a demo 10 times and still be flaky in production. In [a real case study](./case-studies/aaro-property-tax/), an autonomous web agent given the *same task four times* succeeded once - **25% determinism**. A single hand-check would have called it working. AgentEval exists to catch exactly that.
+Your agent can pass a demo 10 times and still be flaky in production. In [a real case study](./case-studies/web-agent-property-tax/), an autonomous web agent given the *same task four times* succeeded once - **25% determinism**. A single hand-check would have called it working. AgentEval exists to catch exactly that.
 
 ![AgentEval audit report: verdict banner, determinism scores, and a flaky scenario caught at 33%](./docs/assets/report-screenshot.png)
 
@@ -225,9 +225,9 @@ See [AGENTS.md](./AGENTS.md) for the canonical integration pattern (written for 
 
 ## Case study
 
-[**A real autonomous web agent at 25% determinism**](./case-studies/aaro-property-tax/) - AgentEval
+[**A real autonomous web agent at 25% determinism**](./case-studies/web-agent-property-tax/) - AgentEval
 evaluating four real recorded runs of an autonomous browser agent on the same task; it succeeded only
-1 of 4 times, with three distinct failure modes. Reproducible: `npx tsx case-studies/aaro-property-tax/evaluate.ts`.
+1 of 4 times, with three distinct failure modes. Reproducible: `npx tsx case-studies/web-agent-property-tax/evaluate.ts`.
 Full writeup: [Your agent passed the demo. Would it pass it again?](./docs/case-studies/25-percent-determinism.md)
 
 ## Benchmark
