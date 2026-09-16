@@ -1,13 +1,13 @@
 // Case study: evaluating a real autonomous web agent with AgentEval.
 //
 // The traces in traces.json are FOUR real recorded runs of the same task by an
-// autonomous web agent (Aaro): "retrieve the property-tax payment receipt from
+// autonomous web agent (private project): "retrieve the property-tax payment receipt from
 // the municipal portal." They are ingested as AgentTrace (account/challan
 // numbers redacted). We replay them through AgentEval's runner so it scores
 // determinism across the real attempts - the headline being that the same task
 // succeeded only once in four tries.
 //
-//   pnpm build && npx tsx case-studies/aaro-property-tax/evaluate.ts
+//   pnpm build && npx tsx case-studies/web-agent-property-tax/evaluate.ts
 
 import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -47,8 +47,8 @@ process.stdout.write(renderConsole(report) + '\n');
 writeFileSync(
   join(here, 'report.html'),
   renderHtml(report, {
-    title: 'Aaro Property-Tax Agent - Reliability Report',
-    agentName: 'Aaro (autonomous web operator)',
+    title: 'Web Agent Property-Tax - Reliability Report',
+    agentName: 'Autonomous web operator (private project)',
   }),
 );
 process.stdout.write('\nWrote report.html\n');

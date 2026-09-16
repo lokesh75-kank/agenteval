@@ -13,7 +13,7 @@ of the same input, from traces you already have.
 
 ## The agent and the task
 
-The agent is an autonomous web operator (an internal project called Aaro): given a goal in
+The agent is an autonomous web operator (a private internal project): given a goal in
 plain language, it finds the right portal, plans a path, drives a real browser, and extracts
 a result. The task was a genuinely useful, high-stakes errand:
 
@@ -105,7 +105,7 @@ the difference between "we tested it, trust us" and a document a reviewer can fi
 
 ![The audit report format: verdict banner, per-scenario determinism scores, flaky runs flagged](../assets/report-screenshot.png)
 
-*(The report above shows the demo suite; [the report generated from this case study](https://github.com/lokesh75-kank/agenteval/tree/main/case-studies/aaro-property-tax) ships in the repo.)*
+*(The report above shows the demo suite; [the report generated from this case study](https://github.com/lokesh75-kank/agenteval/tree/main/case-studies/web-agent-property-tax) ships in the repo.)*
 
 ## Takeaways
 
@@ -120,11 +120,11 @@ the difference between "we tested it, trust us" and a document a reviewer can fi
 Everything here is open source: [AgentEval](https://github.com/lokesh75-kank/agenteval)
 (MIT), `npm i agenteval-core` or `pip install agenteval-python`. The full case study,
 including the redacted traces and the exact evaluation script, is in
-[`case-studies/aaro-property-tax/`](https://github.com/lokesh75-kank/agenteval/tree/main/case-studies/aaro-property-tax),
+[`case-studies/web-agent-property-tax/`](https://github.com/lokesh75-kank/agenteval/tree/main/case-studies/web-agent-property-tax),
 so you can reproduce the 25% yourself:
 
 ```bash
-npx tsx case-studies/aaro-property-tax/evaluate.ts
+npx tsx case-studies/web-agent-property-tax/evaluate.ts
 ```
 
 An honest caveat to close: this is one agent, one task, four runs. It is a validation case
