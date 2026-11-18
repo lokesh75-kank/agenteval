@@ -50,13 +50,17 @@ const DEFAULT_CONFIG_CANDIDATES = [
 ];
 const DEFAULT_BASELINE = 'agenteval.baseline.json';
 
+function discoverConfig(): string | undefined {
+  return DEFAULT_CONFIG_CANDIDATES.map(c => resolve(process.cwd(), c)).find(p => existsSync(p));
+}
+
 async function loadConfig(
   explicit?: string,
   { requireAdapter = true } = {},
 ): Promise<ResolvedConfig> {
   const path = explicit
     ? resolve(process.cwd(), explicit)
-    : DEFAULT_CONFIG_CANDIDATES.map((c) => resolve(process.cwd(), c)).find((p) => existsSync(p));
+    : discoverConfig();
   if (!path || !existsSync(path)) {
     throw new Error(
       `No config found. Create agenteval.config.mjs or agenteval.config.yaml (run "agenteval init") or pass --config <file>.`,
@@ -218,11 +222,8 @@ program
     if (opts.config) {
       config = await loadConfig(opts.config, { requireAdapter: false });
     } else {
-      try {
-        config = await loadConfig(undefined, { requireAdapter: false });
-      } catch {
-        // No config in cwd - fine, the scenarios argument carries everything.
-      }
+      const discovered = discoverConfig();
+      if (discovered) config = await loadConfig(discovered, { requireAdapter: false });
     }
     const src = scenariosArg ?? config.scenarios;
     if (!src) throw new Error('No scenarios. Pass a path argument or set "scenarios" in a config.');
