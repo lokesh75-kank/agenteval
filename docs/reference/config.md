@@ -126,11 +126,11 @@ Score **pre-recorded traces** - no agent run. Each scenario replays as many runs
 | Flag | Effect |
 |---|---|
 | `-t, --traces <file>` | JSON traces file (required) |
-| `-f, --format <format>` | `traces` (an `AgentTrace[]`, default) \| `otel` \| `langsmith` |
+| `-f, --format <format>` | `traces` (an `AgentTrace[]`, default) \| `otel` \| `langsmith` \| `langgraph` |
 | `-c, --config <file>` | For scenarios/threshold/grounding context only |
 | `--json` / `--html <file>` | Reports, as in `run` |
 
-Traces file shapes: a JSON array (or `{ "traces": [...] }`). For `otel`, each element is one run's span array; for `langsmith`, one run tree - both are mapped through the ingest layer. From Python, `agenteval.write_traces(traces, path)` produces the native format.
+Traces file shapes: a JSON array (or `{ "traces": [...] }`). For `otel`, each element is one run's span array; for `langsmith`, one run tree - both are mapped through the ingest layer. For `langgraph`, each element is one run’s update array or checkpoint envelope. Wrap a single run’s updates in an outer array; do not treat each update as a separate run. From Python, `agenteval.write_traces(traces, path)` produces the native format.
 
 ## Python CLI
 

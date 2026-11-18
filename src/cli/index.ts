@@ -24,7 +24,7 @@ import { loadScenarios } from '../core/loader.js';
 import { renderConsole, renderJson, renderHtml } from '../report/index.js';
 import { commandAdapter, isCommandSpec, type CommandAdapterSpec } from '../adapters/command.js';
 import { replayAdapter, replayRunCount } from '../adapters/replay.js';
-import { otelToTrace, langsmithToTrace } from '../ingest/index.js';
+import { otelToTrace, langsmithToTrace, langgraphToTrace } from '../ingest/index.js';
 import { VERSION } from '../version.js';
 
 interface AgentEvalConfig extends RunOptions {
@@ -202,7 +202,7 @@ program
   .option('-t, --traces <file>', 'JSON file of recorded traces (required)')
   .option(
     '-f, --format <format>',
-    'trace file format: traces (AgentTrace[]) | otel | langsmith',
+    'trace file format: traces (AgentTrace[]) | otel | langsmith | langgraph',
     'traces',
   )
   .option('-c, --config <file>', 'config module (for scenarios/threshold; adapter is ignored)')
@@ -279,10 +279,12 @@ function loadTraces(path: string, format: string): AgentTrace[] {
       return items as AgentTrace[];
     case 'otel':
       return items.map((spans) => otelToTrace(spans));
+    case 'langgraph':
+      return items.map((run) => langgraphToTrace(run));
     case 'langsmith':
       return items.map((run) => langsmithToTrace(run));
     default:
-      throw new Error(`Unknown --format "${format}" (expected traces | otel | langsmith).`);
+      throw new Error(`Unknown --format "${format}" (expected traces | otel | langsmith | langgraph).`);
   }
 }
 
