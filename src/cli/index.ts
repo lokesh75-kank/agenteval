@@ -19,7 +19,7 @@ import { parse as parseYaml } from 'yaml';
 import type { AgentAdapter, AgentTrace } from '../core/trace.js';
 import type { Scenario, SuiteReport } from '../core/types.js';
 import type { RunOptions } from '../core/runner.js';
-import { runSuite } from '../core/runner.js';
+import { runSuite, resolveRunConfig } from '../core/runner.js';
 import { loadScenarios } from '../core/loader.js';
 import { renderConsole, renderJson, renderHtml } from '../report/index.js';
 import { commandAdapter, isCommandSpec, type CommandAdapterSpec } from '../adapters/command.js';
@@ -248,6 +248,7 @@ program
       totalScenarios: summaries.length,
       passingScenarios: summaries.filter((s) => s.pass).length,
       scenarios: summaries,
+      replayConfig: { passThreshold: resolveRunConfig(config).passThreshold },
     };
 
     process.stdout.write(renderConsole(report) + '\n');

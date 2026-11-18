@@ -72,7 +72,13 @@ export function renderHtml(report: SuiteReport, meta?: HtmlReportMeta): string {
         provRow('Scenarios using LLM-judge', judged > 0 ? `${judged} of ${report.totalScenarios}` : 'none'),
         provRow('Report generator', generatedBy),
       ].join('\n')
-    : '';
+    : report.replayConfig
+      ? [
+          provRow('Runs per scenario', 'Recorded sample counts vary by scenario; see each scenario’s total runs.'),
+          provRow('Scenario pass threshold', `${pct(report.replayConfig.passThreshold)} of runs`),
+          provRow('Report generator', generatedBy),
+        ].join('\n')
+      : '';
 
   return `<!doctype html>
 <html lang="en">
