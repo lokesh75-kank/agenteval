@@ -26,6 +26,7 @@ import { commandAdapter, isCommandSpec, type CommandAdapterSpec } from '../adapt
 import { replayAdapter, replayRunCount } from '../adapters/replay.js';
 import { otelToTrace, langsmithToTrace } from '../ingest/index.js';
 import { VERSION } from '../version.js';
+import { validateEvaluationScenarios, validateBaseline, parseTolerance, compareBaseline } from './baseline.js';
 
 interface AgentEvalConfig extends RunOptions {
   /** A JS adapter { run }, or a subprocess spec { command, args? } (any language). */
@@ -94,6 +95,7 @@ function resolveScenarios(config: AgentEvalConfig | ResolvedConfig, cliArg?: str
 async function runReport(opts: { config?: string; runs?: string }, cliArg?: string): Promise<{ config: ResolvedConfig; report: SuiteReport }> {
   const config = await loadConfig(opts.config);
   const scenarios = resolveScenarios(config, cliArg);
+  validateEvaluationScenarios(scenarios);
   const runOptions: RunOptions = {
     runs: opts.runs ? Number(opts.runs) : config.runs,
     passThreshold: config.passThreshold,
@@ -111,7 +113,7 @@ interface Baseline {
 }
 
 function toBaseline(report: SuiteReport): Baseline {
-  const scenarios: Baseline['scenarios'] = {};
+  const scenarios: Baseline['scenarios'] = Object.create(null);
   for (const s of report.scenarios) {
     scenarios[s.scenarioId] = { pass: s.pass, determinism: s.determinism };
   }
@@ -170,23 +172,12 @@ program
     if (!existsSync(baselinePath)) {
       throw new Error(`No baseline at ${opts.baseline}. Run "agenteval baseline" first.`);
     }
-    const baseline = JSON.parse(readFileSync(baselinePath, 'utf8')) as Baseline;
+    const baseline = validateBaseline(JSON.parse(readFileSync(baselinePath, 'utf8')));
+    const tolerance = parseTolerance(opts.tolerance);
     const { report } = await runReport(opts, scenarios);
     process.stdout.write(renderConsole(report) + '\n');
 
-    const tolerance = Number(opts.tolerance);
-    const regressions: string[] = [];
-    for (const s of report.scenarios) {
-      const base = baseline.scenarios[s.scenarioId];
-      if (!base) continue;
-      if (base.pass && !s.pass) {
-        regressions.push(`${s.scenarioId}: was passing, now failing`);
-      } else if (base.determinism - s.determinism > tolerance) {
-        regressions.push(
-          `${s.scenarioId}: determinism dropped ${(base.determinism * 100).toFixed(0)}% -> ${(s.determinism * 100).toFixed(0)}%`,
-        );
-      }
-    }
+    const regressions = compareBaseline(baseline, report, tolerance);
     if (regressions.length > 0) {
       process.stdout.write('\nREGRESSIONS:\n' + regressions.map((r) => '  - ' + r).join('\n') + '\n');
       process.exitCode = 1;
@@ -229,6 +220,7 @@ program
     const scenarios =
       typeof src === 'string' ? loadScenarios(resolve(process.cwd(), src)) : src;
 
+    validateEvaluationScenarios(scenarios);
     const adapter = replayAdapter(traces);
     // Each scenario replays as many runs as it has recorded traces (min 1, so
     // a scenario with no matching trace fails visibly rather than vanishing).
