@@ -113,6 +113,8 @@ export interface SuiteReport {
   passingScenarios: number;
   /** Resolved config, recorded so a report is auditable without the invocation. */
   config?: SuiteConfig;
+  /** Replay uses recorded sample counts from each scenario's totalRuns. */
+  replayConfig?: { passThreshold: number };
   scenarios: ScenarioRunSummary[];
 }
 
