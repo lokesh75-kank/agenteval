@@ -11,6 +11,7 @@
 // passes only if every assertion passes, the judge passes, and the agent did
 // not error.
 
+import { validateScenario } from './validation.js';
 import type { AgentAdapter, AgentTrace } from './trace.js';
 import type {
   Scenario,
@@ -65,6 +66,7 @@ export async function runScenario(
   scenario: Scenario,
   options: RunOptions = {},
 ): Promise<ScenarioRunSummary> {
+  validateScenario(scenario);
   const { runs, passThreshold } = resolveRunConfig(options);
 
   const perRun: ScenarioResult[] = [];
@@ -142,6 +144,7 @@ export async function runSuite(
   scenarios: Scenario[],
   options: RunOptions = {},
 ): Promise<SuiteReport> {
+  scenarios.forEach(scenario => validateScenario(scenario));
   const summaries: ScenarioRunSummary[] = [];
   for (const scenario of scenarios) {
     summaries.push(await runScenario(adapter, scenario, options));

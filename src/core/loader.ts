@@ -9,6 +9,7 @@ import { join, dirname, isAbsolute, resolve } from 'node:path';
 import { parse } from 'yaml';
 
 import type { Scenario } from './types.js';
+import { validateScenario } from './validation.js';
 
 /** Parse + minimally validate one Scenario from a YAML string. */
 export function parseScenario(yamlText: string, sourcePath?: string): Scenario {
@@ -66,23 +67,4 @@ function loadFromManifest(manifestPath: string): Scenario[] {
     out.push(loadScenario(p));
   }
   return out;
-}
-
-function validateScenario(raw: unknown, sourcePath?: string): Scenario {
-  const where = sourcePath ? ` (${sourcePath})` : '';
-  if (!raw || typeof raw !== 'object') {
-    throw new Error(`Invalid scenario${where}: expected a YAML object`);
-  }
-  const o = raw as Record<string, unknown>;
-  if (typeof o.id !== 'string' || o.id.length === 0) {
-    throw new Error(`Invalid scenario${where}: missing string "id"`);
-  }
-  const input = o.input as Record<string, unknown> | undefined;
-  if (!input || typeof input.user_message !== 'string') {
-    throw new Error(`Invalid scenario "${o.id}"${where}: missing input.user_message`);
-  }
-  if (!Array.isArray(o.asserts)) {
-    throw new Error(`Invalid scenario "${o.id}"${where}: "asserts" must be a list`);
-  }
-  return raw as Scenario;
 }
