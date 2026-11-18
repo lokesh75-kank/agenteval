@@ -10,7 +10,7 @@ Evaluates the reliability of an LLM agent: wrap the user's agent, run scenarios 
 
 - **User's agent is JS/TS:** follow "Canonical integration" below.
 - **User's agent is Python:** `pip install agenteval-python` (needs Node >= 20 on PATH), wrap the agent with the `@agenteval.adapter` decorator, and use a declarative `agenteval.config.yaml` - see "Python integration" below. Do NOT write JavaScript for a Python project.
-- **User's agent is another language, or you only have recorded traces:** use the subprocess adapter (`adapter: { command, args }` in YAML config; AgentInput JSON on stdin -> AgentTrace JSON on stdout), or score traces directly with `agenteval eval --traces <file> ./scenarios` (`--format traces|otel|langsmith`).
+- **User's agent is another language, or you only have recorded traces:** use the subprocess adapter (`adapter: { command, args }` in YAML config; AgentInput JSON on stdin -> AgentTrace JSON on stdout), or score traces directly with `agenteval eval --traces <file> ./scenarios` (`--format traces|otel|langsmith|langgraph`).
 
 ## Canonical integration (do this)
 

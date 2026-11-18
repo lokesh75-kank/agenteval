@@ -213,6 +213,11 @@ Or from the CLI, with no code at all: `agenteval eval --traces traces.json ./sce
 
 Adapters exist for **OpenTelemetry GenAI** spans, **LangSmith** runs, and **LangGraph** streamed updates or checkpoint histories. Want another format (OpenHands, AutoGen, ...)? Adapters are small, pure functions - see [CONTRIBUTING.md](./CONTRIBUTING.md#adding-an-ingest-adapter), contributions welcome.
 
+For LangGraph exports, run `agenteval eval --traces runs.json ./scenarios --format langgraph`.
+The JSON file contains one element per recorded run: `[updatesForRun1, updatesForRun2]`.
+For one run, wrap its streamed updates in an outer array. Include the user message in the
+recorded messages so the replay can match it to a scenario.
+
 ## MCP server
 
 Expose AgentEval to coding agents (Claude, Codex, Cursor) as callable tools - `evaluate_agent`, `check_grounding`, `get_report`:

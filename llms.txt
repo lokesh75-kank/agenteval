@@ -25,7 +25,7 @@
 - checkGrounding(trace, opts?), detectUncitedClaims, parseCitations, resolveCitations, quoteMatchesSource, GENERIC_PRESET, REGULATED_PRESET
 - judge({trace, rubric, llm, votes?, passThreshold?}), createAnthropic(opts?), createGoogle(opts?), estimateCost(model,in,out)
 - renderConsole(report), renderJson(report), renderHtml(report, meta?)
-- otelToTrace(spans), langsmithToTrace(run)
+- otelToTrace(spans), langsmithToTrace(run), langgraphToTrace(run)
 - metrics.recallAtK / precisionAtK / reciprocalRank / mean / summarize / diffSummaries; computeRecordMetric(input)
 
 ## Assertion kinds
@@ -33,7 +33,7 @@ tool_called, tool_not_called, tool_input_contains_one_of, text_contains, text_co
 
 ## CLI
 - agenteval init [--demo | --demo-python] | run [scenarios] | baseline [scenarios] | check [scenarios] | eval [scenarios] --traces <file>
-- Flags: --config <file>, --runs <n>, --json <file>, --html <file>, --baseline <file>, --tolerance <n>; eval also takes --traces <file> (required) and --format traces|otel|langsmith
+- Flags: --config <file>, --runs <n>, --json <file>, --html <file>, --baseline <file>, --tolerance <n>; eval also takes --traces <file> (required) and --format traces|otel|langsmith|langgraph
 - Config: agenteval.config.mjs default-exports { adapter, scenarios?, runs?, passThreshold?, llm?, assertion? }. Declarative alternative: agenteval.config.yaml with adapter: { command, args? } (subprocess agent, any language).
 - eval scores pre-recorded traces with no agent run; each scenario replays as many runs as it has traces with a matching input.user_message. A config without an adapter is valid for eval.
 
