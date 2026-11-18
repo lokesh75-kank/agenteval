@@ -75,4 +75,4 @@ export { commandAdapter, isCommandSpec, type CommandAdapterSpec } from './adapte
 export { replayAdapter, replayRunCount } from './adapters/replay.js';
 
 // ── Ingest (evaluate traces you already collect) ──
-export { otelToTrace, langsmithToTrace } from './ingest/index.js';
+export { otelToTrace, langsmithToTrace, langgraphToTrace } from './ingest/index.js';
